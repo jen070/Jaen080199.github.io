@@ -353,11 +353,19 @@ const reportBtn = document.getElementById('reportBtn');
 document.body.appendChild(reportBtn); // 加入页面
 
 function updateReportButton() {
-    const rect = qqInput.getBoundingClientRect();
-    // 按钮在搜索框下方空白区域，稍微隔开
-    reportBtn.style.left = (window.scrollX + rect.left + rect.width / 2 - 30) + 'px'; // 居中对齐
-    reportBtn.style.top = (window.scrollY + rect.bottom + 60) + 'px'; // 搜索框下方 15px
+    // 1. 获取白色框子 (card) 的位置
+    const card = document.querySelector('.card');
+    const rect = card.getBoundingClientRect();
+
+    // 2. 设置水平位置：白色框子的右边缘 (rect.right) 减去按钮宽度
+    // 如果想往右边挪出框子，就把 - 60 改小，比如 - 30
+    reportBtn.style.left = (window.scrollX + rect.right - 60) + 'px'; 
+
+    // 3. 设置垂直位置：白色框子的底部 (rect.bottom) 再往下一段距离
+    // 这里的 + 20 就是你说的“隔开一点”的距离，你可以根据需要改成 10 或 30
+    reportBtn.style.top = (window.scrollY + rect.bottom + 20) + 'px'; 
 }
+
 
 // 页面加载和滚动时更新位置
 updateReportButton();
