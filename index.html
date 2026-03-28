@@ -153,36 +153,29 @@
 </button>
 
 <script>
-<script>
-// 获取举报按钮和卡片
-const reportBtn = document.getElementById('reportBtn');
-const card = document.querySelector('.card');
-document.body.appendChild(reportBtn);
 
-// 设置按钮与卡片的相对偏移
-const verticalOffset = 15; // 底部向下偏移像素
-const horizontalOffset = 10; // 右边隔开多少像素
+function checkScammer() {
+    const val = document.getElementById('qqInput').value.trim();
+    const resArea = document.getElementById('resultArea');
+    const storyDiv = document.getElementById('scamStory');
+    const emptyMsg = document.getElementById('emptyMsg');
 
-function updateReportButton() {
-    const rect = card.getBoundingClientRect();
+    if (!val) return;
 
-    // 横向位置：放在白色框右边，向右偏移 horizontalOffset
-    reportBtn.style.left = (window.scrollX + rect.right + horizontalOffset) + 'px';
+    const record = scamList.find(item => item.qq === val.toString());
 
-    // 纵向位置：放在白色框底部，向下偏移 verticalOffset
-    reportBtn.style.top = (window.scrollY + rect.bottom + verticalOffset) + 'px';
+    if (record) {
+        emptyMsg.style.display = "none";
+        resArea.style.display = "block";
+        storyDiv.innerText = record.story;
+    } else {
+        resArea.style.display = "none";
+        emptyMsg.style.display = "block";
+    }
+
+    // ✅ 新增：立即更新举报按钮位置
+    updateReportButton();
 }
-
-// 页面加载、滚动、窗口缩放都更新位置
-updateReportButton();
-window.addEventListener('scroll', updateReportButton);
-window.addEventListener('resize', updateReportButton);
-
-// 点击跳转腾讯文档
-reportBtn.onclick = function() {
-    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
-};
-</script>
 
 
 
