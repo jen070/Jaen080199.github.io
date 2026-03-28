@@ -240,60 +240,65 @@ document.getElementById('modalMask').addEventListener("click", function(e) {
 <!-- ===== 免责声明模块结束 ===== -->
 
 <div id="islandAd">
-  <div class="ad-text">
-    南部战区｜一起玩
-    <a href="https://qm.qq.com/q/PIFlDx0huc" target="_blank">加入：480430023</a>
-  </div>
+  <span class="text">
+    南部战区｜一起玩　加入：
+    <a href="https://qm.qq.com/q/PIFlDx0huc" target="_blank">480430023</a>
+  </span>
   <span class="close" onclick="closeAd()">✖</span>
 </div>
 
 <style>
 #islandAd {
   position: fixed;
-  bottom: 30px;                 /* 往上浮一点 */
+  bottom: 28px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 12px 22px;
+
+  /* 🔥 更长更扁 */
+  width: 520px;
+  max-width: 92%;
+  padding: 8px 18px;
+
   display: flex;
   align-items: center;
+  justify-content: space-between;
 
-  /* 🔥 黑白渐变 */
-  background: linear-gradient(135deg, #000000, #2c2c2c, #000000);
+  /* 🔥 更柔和渐变（重点优化） */
+  background: linear-gradient(
+    135deg,
+    #1a1a1a 0%,
+    #3f3f3f 45%,
+    #4a4a4a 50%,
+    #3f3f3f 55%,
+    #1a1a1a 100%
+  );
 
   color: white;
-  border-radius: 40px;          /* 两边半圆 */
-  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+  border-radius: 999px; /* 完整胶囊 */
+  box-shadow: 
+    0 6px 20px rgba(0,0,0,0.5),
+    inset 0 0 8px rgba(255,255,255,0.05);
+
   z-index: 9999;
-
-  animation: fadeUp 0.5s ease;
 }
 
-.ad-text {
-  font-size: 14px;
+/* 🔥 一行 + 字体更大 */
+.text {
+  font-size: 16px;
+  white-space: nowrap;
 }
 
-.ad-text a {
+.text a {
   color: #ffffff;
-  margin-left: 8px;
   text-decoration: underline;
   font-weight: bold;
+  margin-left: 6px;
 }
 
 .close {
-  margin-left: 12px;
+  margin-left: 10px;
   cursor: pointer;
   opacity: 0.7;
-}
-
-@keyframes fadeUp {
-  from {
-    transform: translate(-50%, 30px);
-    opacity: 0;
-  }
-  to {
-    transform: translate(-50%, 0);
-    opacity: 1;
-  }
 }
 </style>
 
