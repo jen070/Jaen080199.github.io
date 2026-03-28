@@ -141,19 +141,60 @@
     background-color: #fff3cd;
     color: #856404;
     display: flex;
-    flex-direction: column; /* 竖向排列 */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     font-family: Arial, sans-serif;
     cursor: pointer;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    z-index: 9999;
 ">
     <span style="font-size:20px;">⚠️</span>
     <span style="font-size:12px; margin-top:2px;">报告</span>
 </button>
 
 <script>
+// 按钮和页面元素
+const reportBtn = document.getElementById('reportBtn');
+const card = document.querySelector('.card');
+document.body.appendChild(reportBtn);
 
+// 更新按钮位置函数
+function updateReportButton() {
+    const resArea = document.getElementById('resultArea');
+    const emptyMsg = document.getElementById('emptyMsg');
+
+    const rect = card.getBoundingClientRect();
+
+    // 横向：与卡片左边对齐
+    reportBtn.style.left = (window.scrollX + rect.left) + 'px';
+
+    // 纵向：显示结果框或空消息则在其下方，否则在卡片底部
+    let topOffset;
+    if (resArea.style.display !== 'none') {
+        const resRect = resArea.getBoundingClientRect();
+        topOffset = window.scrollY + resRect.bottom + 15; // 结果框下方
+    } else if (emptyMsg.style.display !== 'none') {
+        const emptyRect = emptyMsg.getBoundingClientRect();
+        topOffset = window.scrollY + emptyRect.bottom + 15; // 空消息下方
+    } else {
+        topOffset = window.scrollY + rect.bottom + 15; // 卡片底部
+    }
+
+    reportBtn.style.top = topOffset + 'px';
+}
+
+// 页面加载、滚动、窗口缩放时更新位置
+updateReportButton();
+window.addEventListener('scroll', updateReportButton);
+window.addEventListener('resize', updateReportButton);
+
+// 点击按钮跳转腾讯文档
+reportBtn.onclick = function() {
+    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
+};
+
+// 修改 checkScammer 函数，显示结果后立即更新按钮位置
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -173,10 +214,10 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    // ✅ 新增：立即更新举报按钮位置
+    // 🔹 立即更新举报按钮位置
     updateReportButton();
 }
-
+</script>
 
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
