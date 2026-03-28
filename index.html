@@ -153,26 +153,27 @@
 </button>
 
 <script>
-// 获取搜索框和举报按钮
-const qqInput = document.getElementById('qqInput');
+<script>
+// 获取举报按钮和卡片
 const reportBtn = document.getElementById('reportBtn');
-document.body.appendChild(reportBtn); // 加入页面
+const card = document.querySelector('.card');
+document.body.appendChild(reportBtn);
+
+// 设置按钮与卡片的相对偏移
+const verticalOffset = 15; // 底部向下偏移像素
+const horizontalOffset = 10; // 右边隔开多少像素
 
 function updateReportButton() {
-    // 1. 获取白色框子 (card) 的位置
-    const card = document.querySelector('.card');
     const rect = card.getBoundingClientRect();
 
-    // 2. 横向移动到左侧：对齐白色框子的左边缘 (rect.left)
-    // 如果想让它往左边再挪出框子一点，就把 + 0 改成 - 10
-    reportBtn.style.left = (window.scrollX + rect.left + 0) + 'px'; 
+    // 横向位置：放在白色框右边，向右偏移 horizontalOffset
+    reportBtn.style.left = (window.scrollX + rect.right + horizontalOffset) + 'px';
 
-    // 3. 纵向位置：保持在白色框子底部 (rect.bottom) 下方 15 像素
-    reportBtn.style.top = (window.scrollY + rect.bottom + 15) + 'px'; 
+    // 纵向位置：放在白色框底部，向下偏移 verticalOffset
+    reportBtn.style.top = (window.scrollY + rect.bottom + verticalOffset) + 'px';
 }
 
-
-// 页面加载和滚动时更新位置
+// 页面加载、滚动、窗口缩放都更新位置
 updateReportButton();
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
