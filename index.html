@@ -157,19 +157,19 @@
 <script>
 const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
-const verticalOffset = 15;  // 按钮和下方内容间距
-const extraOffset = 5;      // 微调，让初始位置更往下
+const verticalOffset = 20;  // 按钮和下方内容间距，增加避免重叠
+const extraOffset = 10;     // 微调初始位置
+const horizontalOffset = 0; // 横向偏移量，可微调
 
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
-    // 横向：对齐卡片右边缘外面一点
+    // 横向：对齐卡片左边缘，外部位置
     const rect = card.getBoundingClientRect();
-    const horizontalOffset = 0; // 可以调整，正数表示往右偏移
     reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
-    // 纵向：根据显示内容计算
+    // 纵向：根据显示内容选择底部
     let topOffset;
     if (resArea.style.display !== 'none') {
         topOffset = window.scrollY + resArea.getBoundingClientRect().bottom + verticalOffset + extraOffset;
@@ -182,10 +182,10 @@ function updateReportButton() {
     reportBtn.style.top = topOffset + 'px';
 }
 
-// 页面加载时初始化
-updateReportButton();
+// DOM 加载完成后初始化
+window.addEventListener('DOMContentLoaded', updateReportButton);
 
-// 点击核查后更新按钮位置
+// 点击核查按钮更新
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -205,11 +205,10 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    // 点击后立即更新按钮位置
-    updateReportButton();
+    updateReportButton(); // 点击立即更新位置
 }
 
-// 页面滚动、缩放时也更新
+// 页面滚动/缩放时更新
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
 
@@ -218,7 +217,7 @@ const observer = new MutationObserver(updateReportButton);
 observer.observe(document.getElementById('resultArea'), { childList: true, subtree: true, attributes: true });
 observer.observe(document.getElementById('emptyMsg'), { childList: true, subtree: true, attributes: true });
 
-// 点击按钮跳转腾讯文档
+// 点击按钮跳转
 reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
