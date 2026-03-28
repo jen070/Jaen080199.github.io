@@ -238,42 +238,66 @@ document.getElementById('modalMask').addEventListener("click", function(e) {
 </script>
 
 <!-- ===== 免责声明模块结束 ===== -->
-
-<div id="guildAd">
-  🎮 南部战区｜欢迎一起玩  
-  QQ群：
-  <a href="https://qm.qq.com/q/PIFlDx0huc" target="_blank">480430023</a>
-  <span onclick="closeAd()" style="margin-left:10px; cursor:pointer;">✖</span>
+<div id="islandAd">
+  <div class="ad-text">
+    南部战区｜一起玩
+    <a href="https://qm.qq.com/q/PIFlDx0huc" target="_blank">加入：480430023</a>
+  </div>
+  <span class="close" onclick="closeAd()">✖</span>
 </div>
 
 <style>
-#guildAd {
+#islandAd {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #1e1e1e;
+  bottom: 30px;                 /* 往上浮一点 */
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 22px;
+  display: flex;
+  align-items: center;
+
+  /* 🔥 黑白渐变 */
+  background: linear-gradient(135deg, #000000, #2c2c2c, #000000);
+
   color: white;
-  text-align: center;
-  padding: 12px;
-  font-size: 14px;
+  border-radius: 40px;          /* 两边半圆 */
+  box-shadow: 0 8px 25px rgba(0,0,0,0.5);
   z-index: 9999;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+
+  animation: fadeUp 0.5s ease;
 }
 
-#guildAd a {
-  color: #00d4ff;
+.ad-text {
+  font-size: 14px;
+}
+
+.ad-text a {
+  color: #ffffff;
+  margin-left: 8px;
   text-decoration: underline;
   font-weight: bold;
 }
 
-body {
-  padding-bottom: 70px;
+.close {
+  margin-left: 12px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+@keyframes fadeUp {
+  from {
+    transform: translate(-50%, 30px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
 }
 </style>
 
 <script>
 function closeAd() {
-  document.getElementById("guildAd").style.display = "none";
+  document.getElementById("islandAd").style.display = "none";
 }
 </script>
