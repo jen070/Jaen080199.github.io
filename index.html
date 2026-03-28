@@ -154,33 +154,33 @@
 </button>
 
 <script>
-// 按钮和页面元素
 const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
 document.body.appendChild(reportBtn);
 
-// 设置偏移量
-const verticalOffset = 15; // 与卡片底部或内容下方的间距
-const horizontalOffset = 0; // 与卡片左边对齐（原始位置）
+// 横向偏移量（原始位置左边缘）
+const horizontalOffset = 0;
+// 纵向与内容下方间距
+const verticalOffset = 15;
 
-// 更新按钮位置函数
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
+    // 横向位置固定：卡片左边 + offset
     const rect = card.getBoundingClientRect();
-
-    // 横向：保持原始位置，卡片左边 + horizontalOffset
     reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
-    // 纵向：如果显示结果框或空消息，则在其下方，否则在卡片底部
+    // 纵向位置：
+    // 如果结果框显示 → 在结果框底部
+    // 否则如果空消息显示 → 在空消息底部
+    // 否则 → 在卡片底部
     let topOffset;
     if (resArea.style.display !== 'none') {
-        const resRect = resArea.getBoundingClientRect();
-        topOffset = window.scrollY + resRect.bottom + verticalOffset;
+        // 使用 scrollTop + offsetHeight，保证不会重叠
+        topOffset = window.scrollY + resArea.offsetTop + resArea.offsetHeight + verticalOffset;
     } else if (emptyMsg.style.display !== 'none') {
-        const emptyRect = emptyMsg.getBoundingClientRect();
-        topOffset = window.scrollY + emptyRect.bottom + verticalOffset;
+        topOffset = window.scrollY + emptyMsg.offsetTop + emptyMsg.offsetHeight + verticalOffset;
     } else {
         topOffset = window.scrollY + rect.bottom + verticalOffset;
     }
@@ -188,7 +188,7 @@ function updateReportButton() {
     reportBtn.style.top = topOffset + 'px';
 }
 
-// 页面加载、滚动、窗口缩放时更新位置
+// 初始化和窗口变化时更新位置
 updateReportButton();
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
@@ -198,7 +198,7 @@ reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
 
-// 修改 checkScammer 函数，显示结果后立即更新按钮位置
+// 修改 checkScammer，显示结果后立即更新按钮位置
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -218,7 +218,7 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    // 🔹 立即更新举报按钮位置
+    // 🔹 立即更新按钮位置，保证不重叠
     updateReportButton();
 }
 </script>
