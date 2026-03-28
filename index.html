@@ -357,13 +357,12 @@ function updateReportButton() {
     const card = document.querySelector('.card');
     const rect = card.getBoundingClientRect();
 
-    // 2. 设置水平位置：白色框子的右边缘 (rect.right) 减去按钮宽度
-    // 如果想往右边挪出框子，就把 - 60 改小，比如 - 30
-    reportBtn.style.left = (window.scrollX + rect.right - 60) + 'px'; 
+    // 2. 横向移动到左侧：对齐白色框子的左边缘 (rect.left)
+    // 如果想让它往左边再挪出框子一点，就把 + 0 改成 - 10
+    reportBtn.style.left = (window.scrollX + rect.left + 0) + 'px'; 
 
-    // 3. 设置垂直位置：白色框子的底部 (rect.bottom) 再往下一段距离
-    // 这里的 + 20 就是你说的“隔开一点”的距离，你可以根据需要改成 10 或 30
-    reportBtn.style.top = (window.scrollY + rect.bottom + 20) + 'px'; 
+    // 3. 纵向位置：保持在白色框子底部 (rect.bottom) 下方 15 像素
+    reportBtn.style.top = (window.scrollY + rect.bottom + 15) + 'px'; 
 }
 
 
