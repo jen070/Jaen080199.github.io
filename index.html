@@ -254,38 +254,41 @@ document.getElementById('modalMask').addEventListener("click", function(e) {
   left: 50%;
   transform: translateX(-50%);
 
-  /* 🔥 更长更扁 */
-  width: 520px;
+  /* 🔥 自适应宽度 */
+  width: auto;
   max-width: 92%;
-  padding: 8px 18px;
+
+  /* 🔥 更扁 */
+  padding: 8px 16px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  /* 🔥 更柔和渐变（重点优化） */
+  /* 🔥 更柔和渐变（中间亮，两边不死黑） */
   background: linear-gradient(
     135deg,
-    #1a1a1a 0%,
-    #3f3f3f 45%,
-    #4a4a4a 50%,
-    #3f3f3f 55%,
-    #1a1a1a 100%
+    #2a2a2a 0%,
+    #555 50%,
+    #2a2a2a 100%
   );
 
   color: white;
-  border-radius: 999px; /* 完整胶囊 */
+  border-radius: 999px;
+
   box-shadow: 
-    0 6px 20px rgba(0,0,0,0.5),
-    inset 0 0 8px rgba(255,255,255,0.05);
+    0 6px 18px rgba(0,0,0,0.5),
+    inset 0 0 6px rgba(255,255,255,0.08);
 
   z-index: 9999;
 }
 
-/* 🔥 一行 + 字体更大 */
+/* 🔥 一行 + 自适应 */
 .text {
   font-size: 16px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .text a {
@@ -295,10 +298,22 @@ document.getElementById('modalMask').addEventListener("click", function(e) {
   margin-left: 6px;
 }
 
+/* 关闭按钮 */
 .close {
   margin-left: 10px;
   cursor: pointer;
   opacity: 0.7;
+}
+
+/* 🔥 手机优化 */
+@media (max-width: 600px) {
+  .text {
+    font-size: 14px;
+  }
+
+  #islandAd {
+    padding: 6px 12px;
+  }
 }
 </style>
 
