@@ -131,6 +131,7 @@
 </body>
 </html>
 
+
 <!-- 举报按钮 -->
 <button id="reportBtn" style="
     position: absolute;
@@ -157,35 +158,34 @@
 <script>
 const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
-const verticalOffset = 20;  // 按钮和下方内容间距，增加避免重叠
-const extraOffset = 10;     // 微调初始位置
-const horizontalOffset = 0; // 横向偏移量，可微调
+const verticalOffset = 15;  // 按钮与框底间距
+const horizontalOffset = 0; // 横向微调
 
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
-    // 横向：对齐卡片左边缘，外部位置
+    // 横向：对齐卡片左边
     const rect = card.getBoundingClientRect();
     reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
     // 纵向：根据显示内容选择底部
     let topOffset;
     if (resArea.style.display !== 'none') {
-        topOffset = window.scrollY + resArea.getBoundingClientRect().bottom + verticalOffset + extraOffset;
+        topOffset = window.scrollY + resArea.getBoundingClientRect().bottom + verticalOffset;
     } else if (emptyMsg.style.display !== 'none') {
-        topOffset = window.scrollY + emptyMsg.getBoundingClientRect().bottom + verticalOffset + extraOffset;
+        topOffset = window.scrollY + emptyMsg.getBoundingClientRect().bottom + verticalOffset;
     } else {
-        topOffset = window.scrollY + rect.bottom + verticalOffset + extraOffset;
+        topOffset = window.scrollY + rect.bottom + verticalOffset;
     }
 
     reportBtn.style.top = topOffset + 'px';
 }
 
-// DOM 加载完成后初始化
+// DOM 加载完成后初始化位置
 window.addEventListener('DOMContentLoaded', updateReportButton);
 
-// 点击核查按钮更新
+// 点击核查按钮时更新位置
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -205,14 +205,14 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    updateReportButton(); // 点击立即更新位置
+    updateReportButton(); // 点击后立即更新按钮位置
 }
 
-// 页面滚动/缩放时更新
+// 滚动/缩放页面时也更新位置
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
 
-// 监听动态内容高度变化，实时跟随
+// 监听结果框和空消息内容变化，实时跟随
 const observer = new MutationObserver(updateReportButton);
 observer.observe(document.getElementById('resultArea'), { childList: true, subtree: true, attributes: true });
 observer.observe(document.getElementById('emptyMsg'), { childList: true, subtree: true, attributes: true });
@@ -222,8 +222,6 @@ reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
 </script>
-
-
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
 
