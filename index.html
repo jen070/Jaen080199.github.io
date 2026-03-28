@@ -131,6 +131,7 @@
 </body>
 </html>
 
+
 <!-- 举报按钮 -->
 <button id="reportBtn" style="
     position: absolute;
@@ -148,6 +149,7 @@
     cursor: pointer;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     z-index: 9999;
+    transition: top 0.1s ease; /* 添加平滑移动效果 */
 ">
     <span style="font-size:20px;">⚠️</span>
     <span style="font-size:12px; margin-top:2px;">报告</span>
@@ -158,26 +160,21 @@ const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
 document.body.appendChild(reportBtn);
 
-// 横向偏移量（原始位置左边缘）
+// 横向偏移量（卡片左对齐）
 const horizontalOffset = 0;
-// 纵向与内容下方间距
+// 纵向与下方内容间距
 const verticalOffset = 15;
 
+// 实时更新按钮位置
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
-    // 横向位置固定：卡片左边 + offset
     const rect = card.getBoundingClientRect();
     reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
-    // 纵向位置：
-    // 如果结果框显示 → 在结果框底部
-    // 否则如果空消息显示 → 在空消息底部
-    // 否则 → 在卡片底部
     let topOffset;
     if (resArea.style.display !== 'none') {
-        // 使用 scrollTop + offsetHeight，保证不会重叠
         topOffset = window.scrollY + resArea.offsetTop + resArea.offsetHeight + verticalOffset;
     } else if (emptyMsg.style.display !== 'none') {
         topOffset = window.scrollY + emptyMsg.offsetTop + emptyMsg.offsetHeight + verticalOffset;
@@ -188,17 +185,17 @@ function updateReportButton() {
     reportBtn.style.top = topOffset + 'px';
 }
 
-// 初始化和窗口变化时更新位置
+// 初始化和页面变化时更新
 updateReportButton();
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
 
-// 点击按钮跳转腾讯文档
+// 点击按钮跳转文档
 reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
 
-// 修改 checkScammer，显示结果后立即更新按钮位置
+// 修改 checkScammer 函数，结果显示后立即更新按钮
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -218,9 +215,14 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    // 🔹 立即更新按钮位置，保证不重叠
+    // 🔹 点击核查立即更新位置，实现“实时跟随”
     updateReportButton();
 }
+
+// 如果你希望**动态高度变化时按钮也跟着移动**，可以用 MutationObserver
+const observer = new MutationObserver(updateReportButton);
+observer.observe(document.getElementById('resultArea'), { childList: true, subtree: true, attributes: true });
+observer.observe(document.getElementById('emptyMsg'), { childList: true, subtree: true, attributes: true });
 </script>
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
