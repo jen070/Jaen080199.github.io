@@ -323,24 +323,46 @@ function closeAd() {
 }
 </script>
 
-<!-- 竖向举报按钮 -->
-<div style="position: fixed; top: 120px; right: 50px; z-index: 1000; text-align: center;">
-    <button id="reportBtn" style="
-        width: 60px;              /* 椭圆形宽度 */
-        height: 60px;             /* 椭圆形高度 */
-        border-radius: 30px;      /* 完全椭圆 */
-        border: none;
-        background-color: #fff3cd; /* 浅黄色 */
-        color: #856404;
-        display: flex;
-        flex-direction: column;   /* 竖向排列 */
-        align-items: center;
-        justify-content: center;
-        font-family: Arial, sans-serif;
-        cursor: pointer;
-        box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    " onclick="window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank')">
-        <span style="font-size:20px;">⚠️</span>
-        <span style="font-size:12px; margin-top:2px;">报告</span>
-    </button>
-</div>
+<!-- 举报按钮 -->
+<button id="reportBtn" style="
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    border: none;
+    background-color: #fff3cd;
+    color: #856404;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+">
+    <span style="font-size:20px;">⚠️</span>
+    <span style="font-size:12px; margin-top:2px;">报告</span>
+</button>
+
+<script>
+// 获取搜索框和举报按钮
+const qqInput = document.getElementById('qqInput');
+const reportBtn = document.getElementById('reportBtn');
+document.body.appendChild(reportBtn); // 按钮加入 body
+
+function updateReportButton() {
+    const rect = qqInput.getBoundingClientRect();
+    reportBtn.style.left = (window.scrollX + rect.right + 10) + 'px'; // 搜索框右侧 + 间距
+    reportBtn.style.top = (window.scrollY + rect.top + 10) + 'px';     // 稍微下移
+}
+
+// 页面加载和滚动时更新位置
+updateReportButton();
+window.addEventListener('scroll', updateReportButton);
+window.addEventListener('resize', updateReportButton);
+
+// 点击按钮跳转到腾讯文档
+reportBtn.onclick = function() {
+    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
+};
+</script>
