@@ -323,28 +323,24 @@ function closeAd() {
 }
 </script>
 
-<!-- 搜索框旁边的举报按钮 -->
-<div style="position: relative; display: inline-block;">
-    <!-- 搜索框示意 -->
-    <input type="text" id="searchBox" placeholder="搜索..." style="padding:5px 10px; width:200px; border-radius:5px;">
-
-    <!-- 举报按钮 -->
+<!-- 竖向举报按钮 -->
+<div style="position: fixed; top: 120px; right: 50px; z-index: 1000; text-align: center;">
     <button id="reportBtn" style="
-        position: absolute;
-        top: 35px;          /* 稍微往下 */
-        left: 210px;        /* 搜索框最右侧+间距 */
-        padding: 5px 15px;
-        border-radius: 25px; /* 椭圆形 */
+        width: 60px;              /* 椭圆形宽度 */
+        height: 60px;             /* 椭圆形高度 */
+        border-radius: 30px;      /* 完全椭圆 */
         border: none;
-        background-color: #fff3cd; /* 警告浅黄色 */
+        background-color: #fff3cd; /* 浅黄色 */
         color: #856404;
         display: flex;
+        flex-direction: column;   /* 竖向排列 */
         align-items: center;
+        justify-content: center;
         font-family: Arial, sans-serif;
         cursor: pointer;
         box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     " onclick="window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank')">
-        <span style="font-size:16px; margin-right:5px;">⚠️</span>
-        <span>报告</span>
+        <span style="font-size:20px;">⚠️</span>
+        <span style="font-size:12px; margin-top:2px;">报告</span>
     </button>
 </div>
