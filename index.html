@@ -239,3 +239,41 @@ document.getElementById('modalMask').addEventListener("click", function(e) {
 
 <!-- ===== 免责声明模块结束 ===== -->
 
+<div id="guildAd">
+  🎮 南部战区｜欢迎一起玩  
+  QQ群：
+  <a href="https://qm.qq.com/q/5qKzF5TH2M" target="_blank">619393864</a>
+  <span onclick="closeAd()" style="margin-left:10px; cursor:pointer;">✖</span>
+</div>
+
+<style>
+#guildAd {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #1e1e1e;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  z-index: 9999;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+}
+
+#guildAd a {
+  color: #00d4ff;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+body {
+  padding-bottom: 70px;
+}
+</style>
+
+<script>
+function closeAd() {
+  document.getElementById("guildAd").style.display = "none";
+}
+</script>
