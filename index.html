@@ -323,6 +323,8 @@ function closeAd() {
 }
 </script>
 
+
+
 <!-- 举报按钮 -->
 <button id="reportBtn" style="
     position: absolute;
@@ -333,7 +335,7 @@ function closeAd() {
     background-color: #fff3cd;
     color: #856404;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /* 竖向排列 */
     align-items: center;
     justify-content: center;
     font-family: Arial, sans-serif;
@@ -348,12 +350,13 @@ function closeAd() {
 // 获取搜索框和举报按钮
 const qqInput = document.getElementById('qqInput');
 const reportBtn = document.getElementById('reportBtn');
-document.body.appendChild(reportBtn); // 按钮加入 body
+document.body.appendChild(reportBtn); // 加入页面
 
 function updateReportButton() {
     const rect = qqInput.getBoundingClientRect();
-    reportBtn.style.left = (window.scrollX + rect.right + 10) + 'px'; // 搜索框右侧 + 间距
-    reportBtn.style.top = (window.scrollY + rect.top + 10) + 'px';     // 稍微下移
+    // 按钮在搜索框下方空白区域，稍微隔开
+    reportBtn.style.left = (window.scrollX + rect.left + rect.width / 2 - 30) + 'px'; // 居中对齐
+    reportBtn.style.top = (window.scrollY + rect.bottom + 15) + 'px'; // 搜索框下方 15px
 }
 
 // 页面加载和滚动时更新位置
@@ -361,7 +364,7 @@ updateReportButton();
 window.addEventListener('scroll', updateReportButton);
 window.addEventListener('resize', updateReportButton);
 
-// 点击按钮跳转到腾讯文档
+// 点击跳转腾讯文档
 reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
