@@ -131,6 +131,57 @@
 </body>
 </html>
 
+<!-- 举报按钮 -->
+<button id="reportBtn" style="
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    border: none;
+    background-color: #fff3cd;
+    color: #856404;
+    display: flex;
+    flex-direction: column; /* 竖向排列 */
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    cursor: pointer;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+">
+    <span style="font-size:20px;">⚠️</span>
+    <span style="font-size:12px; margin-top:2px;">报告</span>
+</button>
+
+<script>
+// 获取搜索框和举报按钮
+const qqInput = document.getElementById('qqInput');
+const reportBtn = document.getElementById('reportBtn');
+document.body.appendChild(reportBtn); // 加入页面
+
+function updateReportButton() {
+    // 1. 获取白色框子 (card) 的位置
+    const card = document.querySelector('.card');
+    const rect = card.getBoundingClientRect();
+
+    // 2. 横向移动到左侧：对齐白色框子的左边缘 (rect.left)
+    // 如果想让它往左边再挪出框子一点，就把 + 0 改成 - 10
+    reportBtn.style.left = (window.scrollX + rect.left + 0) + 'px'; 
+
+    // 3. 纵向位置：保持在白色框子底部 (rect.bottom) 下方 15 像素
+    reportBtn.style.top = (window.scrollY + rect.bottom + 15) + 'px'; 
+}
+
+
+// 页面加载和滚动时更新位置
+updateReportButton();
+window.addEventListener('scroll', updateReportButton);
+window.addEventListener('resize', updateReportButton);
+
+// 点击跳转腾讯文档
+reportBtn.onclick = function() {
+    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
+};
+</script>
 
 
 
@@ -325,54 +376,3 @@ function closeAd() {
 
 
 
-<!-- 举报按钮 -->
-<button id="reportBtn" style="
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    border: none;
-    background-color: #fff3cd;
-    color: #856404;
-    display: flex;
-    flex-direction: column; /* 竖向排列 */
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    cursor: pointer;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-">
-    <span style="font-size:20px;">⚠️</span>
-    <span style="font-size:12px; margin-top:2px;">报告</span>
-</button>
-
-<script>
-// 获取搜索框和举报按钮
-const qqInput = document.getElementById('qqInput');
-const reportBtn = document.getElementById('reportBtn');
-document.body.appendChild(reportBtn); // 加入页面
-
-function updateReportButton() {
-    // 1. 获取白色框子 (card) 的位置
-    const card = document.querySelector('.card');
-    const rect = card.getBoundingClientRect();
-
-    // 2. 横向移动到左侧：对齐白色框子的左边缘 (rect.left)
-    // 如果想让它往左边再挪出框子一点，就把 + 0 改成 - 10
-    reportBtn.style.left = (window.scrollX + rect.left + 0) + 'px'; 
-
-    // 3. 纵向位置：保持在白色框子底部 (rect.bottom) 下方 15 像素
-    reportBtn.style.top = (window.scrollY + rect.bottom + 15) + 'px'; 
-}
-
-
-// 页面加载和滚动时更新位置
-updateReportButton();
-window.addEventListener('scroll', updateReportButton);
-window.addEventListener('resize', updateReportButton);
-
-// 点击跳转腾讯文档
-reportBtn.onclick = function() {
-    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
-};
-</script>
