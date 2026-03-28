@@ -159,6 +159,10 @@ const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
 document.body.appendChild(reportBtn);
 
+// 设置偏移量
+const verticalOffset = 15; // 与卡片底部或内容下方的间距
+const horizontalOffset = 0; // 与卡片左边对齐（原始位置）
+
 // 更新按钮位置函数
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
@@ -166,19 +170,19 @@ function updateReportButton() {
 
     const rect = card.getBoundingClientRect();
 
-    // 横向：与卡片左边对齐
-    reportBtn.style.left = (window.scrollX + rect.left) + 'px';
+    // 横向：保持原始位置，卡片左边 + horizontalOffset
+    reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
-    // 纵向：显示结果框或空消息则在其下方，否则在卡片底部
+    // 纵向：如果显示结果框或空消息，则在其下方，否则在卡片底部
     let topOffset;
     if (resArea.style.display !== 'none') {
         const resRect = resArea.getBoundingClientRect();
-        topOffset = window.scrollY + resRect.bottom + 15; // 结果框下方
+        topOffset = window.scrollY + resRect.bottom + verticalOffset;
     } else if (emptyMsg.style.display !== 'none') {
         const emptyRect = emptyMsg.getBoundingClientRect();
-        topOffset = window.scrollY + emptyRect.bottom + 15; // 空消息下方
+        topOffset = window.scrollY + emptyRect.bottom + verticalOffset;
     } else {
-        topOffset = window.scrollY + rect.bottom + 15; // 卡片底部
+        topOffset = window.scrollY + rect.bottom + verticalOffset;
     }
 
     reportBtn.style.top = topOffset + 'px';
@@ -218,7 +222,6 @@ function checkScammer() {
     updateReportButton();
 }
 </script>
-
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
 
