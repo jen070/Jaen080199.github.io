@@ -131,71 +131,61 @@
 </body>
 </html>
 
-
-<!-- 举报按钮 -->
-<button id="reportBtn" style="
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    border: none;
-    background-color: #fff3cd;
-    color: #856404;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    cursor: pointer;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    z-index: 9999;
-    transition: top 0.1s ease; /* 添加平滑移动效果 */
-">
-    <span style="font-size:20px;">⚠️</span>
-    <span style="font-size:12px; margin-top:2px;">报告</span>
-</button>
+<!-- 举报按钮，放在 card 底部 -->
+<div style="position: relative; width: 100%; max-width: 450px; margin: 0 auto;">
+    <button id="reportBtn" style="
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border-radius: 30px;
+        border: none;
+        background-color: #fff3cd;
+        color: #856404;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: Arial, sans-serif;
+        cursor: pointer;
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        transition: top 0.1s ease; /* 平滑移动 */
+        z-index: 10;
+    ">
+        <span style="font-size:20px;">⚠️</span>
+        <span style="font-size:12px; margin-top:2px;">报告</span>
+    </button>
+</div>
 
 <script>
 const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
-document.body.appendChild(reportBtn);
+const verticalOffset = 15; // 按钮和内容间距
 
-// 横向偏移量（卡片左对齐）
-const horizontalOffset = 0;
-// 纵向与下方内容间距
-const verticalOffset = 15;
-
-// 实时更新按钮位置
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
+    // 横向对齐卡片左边
     const rect = card.getBoundingClientRect();
-    reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
+    reportBtn.style.left = '0px'; // 因为按钮在 card 下的相对容器中，直接 0 就是左对齐
 
+    // 纵向：根据显示的内容动态计算
     let topOffset;
     if (resArea.style.display !== 'none') {
-        topOffset = window.scrollY + resArea.offsetTop + resArea.offsetHeight + verticalOffset;
+        topOffset = resArea.offsetTop + resArea.offsetHeight + verticalOffset;
     } else if (emptyMsg.style.display !== 'none') {
-        topOffset = window.scrollY + emptyMsg.offsetTop + emptyMsg.offsetHeight + verticalOffset;
+        topOffset = emptyMsg.offsetTop + emptyMsg.offsetHeight + verticalOffset;
     } else {
-        topOffset = window.scrollY + rect.bottom + verticalOffset;
+        topOffset = card.offsetHeight + verticalOffset;
     }
 
     reportBtn.style.top = topOffset + 'px';
 }
 
-// 初始化和页面变化时更新
+// 初始化
 updateReportButton();
-window.addEventListener('scroll', updateReportButton);
-window.addEventListener('resize', updateReportButton);
 
-// 点击按钮跳转文档
-reportBtn.onclick = function() {
-    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
-};
-
-// 修改 checkScammer 函数，结果显示后立即更新按钮
+// 核查按钮点击后也要更新
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -215,15 +205,17 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    // 🔹 点击核查立即更新位置，实现“实时跟随”
+    // 立即更新按钮位置
     updateReportButton();
 }
 
-// 如果你希望**动态高度变化时按钮也跟着移动**，可以用 MutationObserver
+// 监听动态变化（实时跟随）
 const observer = new MutationObserver(updateReportButton);
 observer.observe(document.getElementById('resultArea'), { childList: true, subtree: true, attributes: true });
 observer.observe(document.getElementById('emptyMsg'), { childList: true, subtree: true, attributes: true });
 </script>
+
+
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
 
