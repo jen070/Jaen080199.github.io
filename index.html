@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+(<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -148,8 +148,6 @@
     font-family: Arial, sans-serif;
     cursor: pointer;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-    transition: top 0.1s ease; /* 平滑移动 */
-    z-index: 9999;
 ">
     <span style="font-size:20px;">⚠️</span>
     <span style="font-size:12px; margin-top:2px;">报告</span>
@@ -158,18 +156,21 @@
 <script>
 const reportBtn = document.getElementById('reportBtn');
 const card = document.querySelector('.card');
-const verticalOffset = 15;  // 按钮与框底间距
 const horizontalOffset = 0; // 横向微调
+const verticalOffset = 15;  // 按钮与下方框的间距
+
+// 初始加入页面
+document.body.appendChild(reportBtn);
 
 function updateReportButton() {
     const resArea = document.getElementById('resultArea');
     const emptyMsg = document.getElementById('emptyMsg');
 
-    // 横向：对齐卡片左边
+    // 横向对齐卡片左边缘
     const rect = card.getBoundingClientRect();
     reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
 
-    // 纵向：根据显示内容选择底部
+    // 纵向：根据当前显示内容选择底部
     let topOffset;
     if (resArea.style.display !== 'none') {
         topOffset = window.scrollY + resArea.getBoundingClientRect().bottom + verticalOffset;
@@ -182,10 +183,7 @@ function updateReportButton() {
     reportBtn.style.top = topOffset + 'px';
 }
 
-// DOM 加载完成后初始化位置
-window.addEventListener('DOMContentLoaded', updateReportButton);
-
-// 点击核查按钮时更新位置
+// 点击核查按钮
 function checkScammer() {
     const val = document.getElementById('qqInput').value.trim();
     const resArea = document.getElementById('resultArea');
@@ -205,23 +203,19 @@ function checkScammer() {
         emptyMsg.style.display = "block";
     }
 
-    updateReportButton(); // 点击后立即更新按钮位置
+    // 核查后立即更新举报按钮位置
+    updateReportButton();
 }
 
-// 滚动/缩放页面时也更新位置
-window.addEventListener('scroll', updateReportButton);
-window.addEventListener('resize', updateReportButton);
-
-// 监听结果框和空消息内容变化，实时跟随
-const observer = new MutationObserver(updateReportButton);
-observer.observe(document.getElementById('resultArea'), { childList: true, subtree: true, attributes: true });
-observer.observe(document.getElementById('emptyMsg'), { childList: true, subtree: true, attributes: true });
-
-// 点击按钮跳转
+// 按钮点击跳转
 reportBtn.onclick = function() {
     window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
 };
 </script>
+
+
+
+
 
 <!-- 👇👇👇 全部写在底下（可以这样干） -->
 
