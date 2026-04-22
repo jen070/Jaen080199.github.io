@@ -3,23 +3,463 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>末日围墙僵尸枪战</title>
+<title>末日僵尸枪战完整版</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}
-body{overflow:hidden;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;}
-#gameCanvas{border:2px solid #444;background:#2d342c;}
-.topBar{width:92%;max-width:720px;color:#fff;font-size:16px;padding:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
-.hpWrap{display:flex;align-items:center;gap:6px}
-.hpBox{width:120px;height:14px;background:#333;border-radius:4px;overflow:hidden;border:1px solid #666;}
-.hpFill{height:100%;background:#e53e3e;transition:0.2s all;}
+body{overflow:hidden;background:#121212;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;}
+#gameCanvas{border:2px solid #555;background:#2b302a;}
+.topBar{width:95%;max-width:750px;color:#fff;font-size:15px;padding:8px 0;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.hpWrap{display:flex;align-items:center;gap:5px}
+.hpBox{width:110px;height:12px;background:#333;border-radius:3px;overflow:hidden;border:1px solid #666;}
+.hpFill{height:100%;background:#dc2626;transition:0.15s;}
 .armorText{color:#60a5fa;}
-.gunBar{display:flex;gap:8px;align-items:center;}
-.gunBtn{padding:5px 10px;border:none;border-radius:4px;background:#555;color:#fff;font-size:14px;cursor:pointer;}
-.gunBtn.active{background:#d93025;}
-.shopBtn{padding:6px 12px;border:none;border-radius:4px;background:#f59e0b;color:#fff;font-weight:bold;cursor:pointer;}
-.tipText{color:#aaa;font-size:13px;margin-top:6px;text-align:center;}
+.gunBtn{padding:4px 8px;border:none;border-radius:3px;background:#444;color:#fff;font-size:13px;cursor:pointer;}
+.gunBtn.active{background:#dc2626;}
+.gunBtn.lock{background:#222;color:#777;cursor:not-allowed;}
+.shopBtn{padding:5px 10px;border:none;border-radius:3px;background:#eab308;color:#000;font-weight:bold;cursor:pointer;}
+.tipText{color:#999;font-size:12px;margin-top:5px;text-align:center;}
 
-.shopMask{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;z-index:9999;}
-.shopBox{background:#222;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:90%;max-width:420px;color:#fff;}
-.shopTitle{text-align:center;font-size:22px;font-weight:bold;color:#f59e0b;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #444;}
-.shopGold{text-align:right;margin-bottom:15px;font-size:16px;color:#...
+.shopMask{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;z-index:999;}
+.shopBox{background:#1f1f1f;border:2px solid #eab308;border-radius:10px;padding:18px;width:92%;max-width:400px;color:#fff;}
+.shopTitle{text-align:center;font-size:20px;font-weight:bold;color:#eab308;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #444;}
+.shopGold{text-align:right;margin-bottom:12px;font-size:15px;color:#ffd700;}
+.shopItem{display:flex;justify-content:space-between;align-items:center;padding:10px 5px;border-bottom:1px solid #333;}
+.buyBtn{padding:3px 8px;background:#16a34a;border:none;border-radius:3px;color:#fff;font-size:13px;cursor:pointer;}
+.closeShop{width:100%;margin-top:18px;padding:8px;background:#dc2626;border:none;border-radius:5px;color:#fff;font-size:15px;cursor:pointer;}
+</style>
+</head>
+<body>
+<div class="topBar">
+    <div class="hpWrap">
+        <span>生命</span>
+        <div class="hpBox"><div class="hpFill" id="hpFill"></div></div>
+        <span class="armorText">护甲:<span id="armorNum">0</span></span>
+    </div>
+    <div>金币:<span id="goldNum" style="color:#ffd700;">0</span> | 弹药:<span id="ammoNum">12</span></div>
+    <div class="gunBar">
+        <button class="gunBtn active" data-gun="pistol">手枪</button>
+        <button class="gunBtn lock" data-gun="rifle">步枪🔒</button>
+        <button class="gunBtn lock" data-gun="shotgun">霰弹枪🔒</button>
+        <button class="gunBtn lock" data-gun="sniper">狙击枪🔒</button>
+        <button class="shopBtn" onclick="openShop()">商店</button>
+    </div>
+</div>
+<canvas id="gameCanvas"></canvas>
+<div class="tipText">拖拽红线瞄准松手开火，长枪长按自动连发，僵尸慢你20%移动，击打溅血僵尸带血条</div>
+
+<div class="shopMask" id="shopMask">
+    <div class="shopBox">
+        <div class="shopTitle">武器弹药商店</div>
+        <div class="shopGold">持有金币：<span id="shopGoldShow">0</span></div>
+        <div class="shopList">
+            <div class="shopItem"><span>解锁步枪含30发弹药</span><span class="itemPrice">50金币</span><button class="buyBtn" onclick="buyGoods('unlockRifle',50)">购买</button></div>
+            <div class="shopItem"><span>解锁霰弹枪含10发弹药</span><span class="itemPrice">80金币</span><button class="buyBtn" onclick="buyGoods('unlockShotgun',80)">购买</button></div>
+            <div class="shopItem"><span>解锁狙击枪含10发弹药</span><span class="itemPrice">120金币</span><button class="buyBtn" onclick="buyGoods('unlockSniper',120)">购买</button></div>
+            <div class="shopItem"><span>手枪补满全部弹药</span><span class="itemPrice">10金币</span><button class="buyBtn" onclick="buyGoods('ammoPistol',10)">购买</button></div>
+            <div class="shopItem"><span>步枪补满全部弹药</span><span class="itemPrice">15金币</span><button class="buyBtn" onclick="buyGoods('ammoRifle',15)">购买</button></div>
+            <div class="shopItem"><span>霰弹枪补满全部弹药</span><span class="itemPrice">20金币</span><button class="buyBtn" onclick="buyGoods('ammoShotgun',20)">购买</button></div>
+            <div class="shopItem"><span>狙击枪补满全部弹药</span><span class="itemPrice">25金币</span><button class="buyBtn" onclick="buyGoods('ammoSniper',25)">购买</button></div>
+        </div>
+        <button class="closeShop" onclick="closeShop()">关闭商店</button>
+    </div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let canvasW,canvasH;
+let gameRunTime = 0;//全局存活时长，用来提升僵尸血量难度
+
+//画布自适应适配手机全屏
+function resizeGame(){
+    canvasW = Math.min(window.innerWidth - 15, 730);
+    canvasH = Math.min(window.innerHeight - 190, 700);
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+}
+resizeGame();
+window.addEventListener('resize',resizeGame);
+
+//枪械配置规则完全按要求
+const gunConfig = {
+    pistol: {maxAmmo:12,autoFire:true,name:"手枪",damage:9,unlock:true},
+    rifle: {maxAmmo:30,autoFire:true,name:"步枪",damage:14,unlock:false},
+    shotgun: {maxAmmo:10,autoFire:false,name:"霰弹枪",damage:7,bulletNum:6,unlock:false},
+    sniper: {maxAmmo:10,autoFire:false,name:"狙击枪",damage:75,unlock:false}
+};
+let nowGun = "pistol";
+let nowAmmo = gunConfig.pistol.maxAmmo;
+let totalGold = 0;
+const killBaseGold = 12;//单只僵尸固定击杀金币
+
+//玩家基础属性
+const player = {
+    x: canvasW/2,y: canvasH/2,size:22,speed:3.5,hp:100,maxHp:100,armor:0,color:"#22c55e"
+};
+
+//全局游戏变量
+let gameOver = false;
+let zombies = [];
+let walls = [];
+let props = [];
+let keys = {};
+let touchDown = false;
+let aimEndX = 0,aimEndY = 0;
+let autoFireTimer = null;
+let bullets = [];
+let bloodEffects = [];//命中血液飞溅特效数组
+
+//生成方框围墙障碍物
+function initWallBox(){
+    walls = [];
+    for(let i=0;i<6;i++){
+        const w = 70 + Math.random()*50;
+        const h = 70 + Math.random()*50;
+        walls.push({
+            x:60+Math.random()*(canvasW-120-w),
+            y:60+Math.random()*(canvasH-120-h),
+            w:w,h:h
+        });
+    }
+}
+
+//通用碰撞检测函数
+function pointInRect(px,py,rect){
+    return px > rect.x && px < rect.x+rect.w && py > rect.y && py < rect.y+rect.h;
+}
+function circleCollide(a,b,r1,r2){
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.hypot(dx,dy) < r1+r2;
+}
+//圆形物体墙体碰撞，禁止穿墙
+function circleHitWall(obj,r){
+    for(let wall of walls){
+        if(pointInRect(obj.x,obj.y,wall) || pointInRect(obj.x-r,obj.y,wall) || pointInRect(obj.x+r,obj.y,wall) || pointInRect(obj.x,obj.y-r,wall) || pointInRect(obj.x,obj.y+r,wall)){
+            return true;
+        }
+    }
+    return false;
+}
+
+//僵尸专属移动：永久比玩家慢20% + 智能绕墙寻路
+function zombieMoveFindPath(zom){
+    //固定僵尸移速=玩家速度*0.8，全程慢20%
+    const realZombieSpeed = player.speed * 0.8;
+    const baseAng = Math.atan2(player.y - zom.y, player.x - zom.x);
+    let moveX = Math.cos(baseAng) * realZombieSpeed;
+    let moveY = Math.sin(baseAng) * realZombieSpeed;
+
+    //撞墙自动绕行
+    let testZ = {...zom};
+    testZ.x += moveX; testZ.y += moveY;
+    if(circleHitWall(testZ,zom.size)){
+        moveX = Math.cos(baseAng + Math.PI/3) * realZombieSpeed;
+        moveY = Math.sin(baseAng + Math.PI/3) * realZombieSpeed;
+        testZ.x = zom.x + moveX; testZ.y = zom.y + moveY;
+        if(circleHitWall(testZ,zom.size)){
+            moveX = Math.cos(baseAng - Math.PI/3) * realZombieSpeed;
+            moveY = Math.sin(baseAng - Math.PI/3) * realZombieSpeed;
+        }
+    }
+    zom.x += moveX;
+    zom.y += moveY;
+    //边界限位
+    zom.x = Math.max(zom.size, Math.min(canvasW-zom.size,zom.x));
+    zom.y = Math.max(zom.size, Math.min(canvasH-zom.size,zom.y));
+}
+
+//新增命中血液飞溅特效生成
+function addBloodEffect(x,y){
+    for(let i=0;i<8;i++){
+        bloodEffects.push({
+            x:x,y:y,
+            vx:(Math.random()-0.5)*4,
+            vy:(Math.random()-0.5)*4,
+            size:2+Math.random()*3,
+            life:25//特效存活帧数
+        });
+    }
+}
+
+//随机刷新护甲道具
+function spawnArmorProp(){
+    if(gameOver) return;
+    let newProp,valid = false;
+    while(!valid){
+        newProp = {x:Math.random()*(canvasW-40)+20,y:Math.random()*(canvasH-40)+20,size:16,type:"armor",value:20,color:"#60a5fa"};
+        if(!circleHitWall(newProp,newProp.size)) valid = true;
+    }
+    props.push(newProp);
+}
+
+//动态难度僵尸生成，存活越久血量越高
+function spawnZombie(){
+    if(gameOver) return;
+    const rand = Math.random();
+    let type = "normal",zColor="#9acd32";
+    if(rand>0.75){type="dash";zColor="#ffc107";}
+    else if(rand>0.6){type="jump";zColor="#ffff99";}
+    else if(rand>0.45){type="drag";zColor="#859900";}
+
+    let zx,zy;
+    const side = Math.floor(Math.random()*4);
+    switch(side){
+        case 0:zx=Math.random()*canvasW;zy=-25;break;
+        case 1:zx=canvasW+25;zy=Math.random()*canvasH;break;
+        case 2:zx=Math.random()*canvasW;zy=canvasH+25;break;
+        case 3:zx=-25;zy=Math.random()*canvasH;break;
+    }
+    //基础血量+随存活时长递增难度系数，后期僵尸血量大幅上涨，无法秒杀
+    const diffRate = 1 + Math.floor(gameRunTime/15000) * 0.35;
+    let baseHp = 40;
+    if(type==="dash") baseHp=30;
+    if(type==="jump") baseHp=35;
+    if(type==="drag") baseHp=60;
+    const finalHp = Math.floor(baseHp * diffRate);
+
+    zombies.push({
+        x:zx,y:zy,size:19,hp:finalHp,maxHp:finalHp,type:type,skillCd:0,color:zColor,hurtCd:0
+    });
+}
+
+//商店功能全套
+function openShop(){
+    document.getElementById('shopGoldShow').innerText = totalGold;
+    document.getElementById('shopMask').style.display = 'flex';
+    clearInterval(autoFireTimer);
+    touchDown = false;
+}
+function closeShop(){
+    document.getElementById('shopMask').style.display = 'none';
+}
+function buyGoods(type,cost){
+    if(totalGold < cost){alert("金币不足！");return;}
+    totalGold -= cost;
+    switch(type){
+        case 'unlockRifle':
+            gunConfig.rifle.unlock=true;
+            document.querySelector('[data-gun="rifle"]').classList.remove('lock');
+            nowAmmo=gunConfig.rifle.maxAmmo;break;
+        case 'unlockShotgun':
+            gunConfig.shotgun.unlock=true;
+            document.querySelector('[data-gun="shotgun"]').classList.remove('lock');
+            nowAmmo=gunConfig.shotgun.maxAmmo;break;
+        case 'unlockSniper':
+            gunConfig.sniper.unlock=true;
+            document.querySelector('[data-gun="sniper"]').classList.remove('lock');
+            nowAmmo=gunConfig.sniper.maxAmmo;break;
+        case 'ammoPistol':nowAmmo=gunConfig.pistol.maxAmmo;break;
+        case 'ammoRifle':nowAmmo=gunConfig.rifle.maxAmmo;break;
+        case 'ammoShotgun':nowAmmo=gunConfig.shotgun.maxAmmo;break;
+        case 'ammoSniper':nowAmmo=gunConfig.sniper.maxAmmo;break;
+    }
+    document.getElementById('shopGoldShow').innerText = totalGold;
+    updateUI();
+}
+
+//枪械切换绑定
+document.querySelectorAll('.gunBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        if(btn.classList.contains('lock')) return alert("该武器未解锁，请前往商店购买");
+        document.querySelectorAll('.gunBtn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        nowGun = btn.dataset.gun;
+        nowAmmo = gunConfig[nowGun].maxAmmo;
+        updateUI();
+        clearInterval(autoFireTimer);
+    });
+});
+
+//键盘移动控制
+window.addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
+
+//触屏瞄准开火全逻辑
+canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    if(gameOver||nowAmmo<=0) return;
+    touchDown = true;
+    const rect = canvas.getBoundingClientRect();
+    aimEndX = e.touches[0].clientX - rect.left;
+    aimEndY = e.touches[0].clientY - rect.top;
+    if(gunConfig[nowGun].autoFire) autoFireTimer = setInterval(fireBullet,180);
+});
+canvas.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(!touchDown) return;
+    const rect = canvas.getBoundingClientRect();
+    aimEndX = e.touches[0].clientX - rect.left;
+    aimEndY = e.touches[0].clientY - rect.top;
+});
+canvas.addEventListener('touchend',e=>{
+    e.preventDefault();
+    if(!touchDown) return;
+    touchDown = false;
+    if(!gunConfig[nowGun].autoFire) fireBullet();
+    clearInterval(autoFireTimer);
+});
+
+//开火子弹核心逻辑
+function fireBullet(){
+    if(nowAmmo<=0||gameOver) return;
+    nowAmmo--;
+    const angle = Math.atan2(aimEndY-player.y,aimEndX-player.x);
+    const cfg = gunConfig[nowGun];
+    if(nowGun==="shotgun"){
+        for(let i=0;i<cfg.bulletNum;i++){
+            const rAng = angle + (Math.random()-0.5)*0.4;
+            bullets.push({x:player.x,y:player.y,vx:Math.cos(rAng)*9,vy:Math.sin(rAng)*9,damage:cfg.damage,size:4});
+        }
+    }else{
+        bullets.push({x:player.x,y:player.y,vx:Math.cos(angle)*11,vy:Math.sin(angle)*11,damage:cfg.damage,size:nowGun==="sniper"?6:4});
+    }
+    updateUI();
+}
+
+//界面数据刷新
+function updateUI(){
+    document.getElementById('hpFill').style.width = (player.hp/player.maxHp*100)+"%";
+    document.getElementById('armorNum').innerText = player.armor;
+    document.getElementById('ammoNum').innerText = nowAmmo;
+    document.getElementById('goldNum').innerText = totalGold;
+}
+
+//游戏主循环
+function gameLoop(timestamp){
+    if(gameOver){
+        ctx.fillStyle="rgba(0,0,0,0.8)";
+        ctx.fillRect(0,0,canvasW,canvasH);
+        ctx.fillStyle="#fff";
+        ctx.font="bold 30px sans-serif";
+        ctx.textAlign="center";
+        ctx.fillText("游戏结束",canvasW/2,canvasH/2-35);
+        ctx.font="20px sans-serif";
+        ctx.fillText("累计金币："+totalGold,canvasW/2,canvasH/2);
+        ctx.fillText("刷新页面重新游玩",canvasW/2,canvasH/2+40);
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+    gameRunTime = timestamp;//更新全局存活时长，提升难度
+    ctx.clearRect(0,0,canvasW,canvasH);
+
+    //玩家移动+穿墙限制
+    let px = player.x, py = player.y;
+    if(keys['w']||keys['arrowup']) py-=player.speed;
+    if(keys['s']||keys['arrowdown']) py+=player.speed;
+    if(keys['a']||keys['arrowleft']) px-=player.speed;
+    if(keys['d']||keys['arrowright']) px+=player.speed;
+    const testP = {x:px,y:py};
+    if(!circleHitWall(testP,player.size)){
+        player.x = Math.max(player.size,Math.min(canvasW-player.size,px));
+        player.y = Math.max(player.size,Math.min(canvasH-player.size,py));
+    }
+
+    //绘制方框围墙
+    walls.forEach(wall=>{
+        ctx.fillStyle="#444444";
+        ctx.fillRect(wall.x,wall.y,wall.w,wall.h);
+        ctx.strokeStyle="#222";
+        ctx.lineWidth=5;
+        ctx.strokeRect(wall.x,wall.y,wall.w,wall.h);
+    });
+
+    //护甲道具绘制拾取
+    props.forEach((p,idx)=>{
+        ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle=p.color;ctx.fill();ctx.strokeStyle="#fff";ctx.stroke();
+        if(circleCollide(player,p,player.size,p.size)){
+            player.armor = Math.min(100,player.armor+p.value);
+            props.splice(idx,1);updateUI();
+        }
+    });
+
+    //红色瞄准线绘制
+    if(touchDown){
+        ctx.beginPath();ctx.moveTo(player.x,player.y);ctx.lineTo(aimEndX,aimEndY);
+        ctx.strokeStyle="#ef4444";ctx.lineWidth=3;ctx.stroke();
+        ctx.beginPath();ctx.arc(aimEndX,aimEndY,7,0,Math.PI*2);ctx.fillStyle="#ef4444";ctx.fill();
+    }
+
+    //血液特效更新渲染
+    bloodEffects.forEach((b,idx)=>{
+        b.x += b.vx;b.y += b.vy;b.life--;b.size *=0.92;
+        ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
+        ctx.fillStyle="#b91c1c";ctx.fill();
+        if(b.life<=0) bloodEffects.splice(idx,1);
+    });
+
+    //子弹逻辑：撞墙消失+命中溅血扣血
+    bullets.forEach((b,bi)=>{
+        b.x+=b.vx;b.y+=b.vy;
+        if(circleHitWall(b,b.size)){bullets.splice(bi,1);return;}
+        ctx.beginPath();ctx.arc(b.x,b.y,b.size,0,Math.PI*2);ctx.fillStyle="#fbbf24";ctx.fill();
+        if(b.x<0||b.x>canvasW||b.y<0||b.y>canvasH){bullets.splice(bi,1);return;}
+        //命中僵尸触发血迹+扣血
+        zombies.forEach((z,zi)=>{
+            if(circleCollide(b,z,b.size,z.size)){
+                z.hp -= b.damage;
+                addBloodEffect(z.x,z.y);//命中弹出血液特效
+                bullets.splice(bi,1);
+                if(z.hp<=0){
+                    zombies.splice(zi,1);
+                    totalGold += killBaseGold;
+                    updateUI();
+                }
+            }
+        });
+    });
+
+    //僵尸全AI渲染+头顶血条
+    zombies.forEach(z=>{
+        zombieMoveFindPath(z);
+        z.skillCd--;
+        //特色僵尸技能
+        if(z.type==="dash"&&z.skillCd<=0){z.skillCd=90;}
+        if(z.type==="jump"&&z.skillCd<=0){
+            const jumpAng = Math.atan2(player.y-z.y,player.x-z.x);
+            z.x+=Math.cos(jumpAng)*60;z.y+=Math.sin(jumpAng)*60;z.skillCd=120;
+        }
+        if(z.type==="drag"&&circleCollide(player,z,player.size+5,z.size)&&z.skillCd<=0){
+            player.hp-=8;z.skillCd=60;updateUI();
+        }
+
+        //僵尸攻击玩家护甲伤害逻辑
+        if(circleCollide(player,z,player.size,z.size)&&z.hurtCd<=0){
+            z.hurtCd=25;let hurt = 12;
+            if(player.armor>0){
+                const cut = Math.min(player.armor,hurt);
+                player.armor -= cut;hurt -= cut;
+            }
+            player.hp -= hurt;updateUI();
+            if(player.hp<=0) gameOver=true;
+        }
+
+        //绘制僵尸本体
+        ctx.beginPath();ctx.arc(z.x,z.y,z.size,0,Math.PI*2);ctx.fillStyle=z.color;ctx.fill();ctx.strokeStyle="#000";ctx.lineWidth=1;ctx.stroke();
+
+        //绘制僵尸头顶血条
+        const barW = z.size*1.8;
+        const barH = 4;
+        const hpRate = z.hp / z.maxHp;
+        ctx.fillStyle="#222";
+        ctx.fillRect(z.x-barW/2,z.y-z.size-10,barW,barH);
+        ctx.fillStyle=hpRate>0.5?"#22c55e":hpRate>0.25?"#eab308":"#dc2626";
+        ctx.fillRect(z.x-barW/2,z.y-z.size-10,barW*hpRate,barH);
+    });
+
+    //绘制玩家人物
+    ctx.beginPath();ctx.arc(player.x,player.y,player.size,0,Math.PI*2);ctx.fillStyle=player.color;ctx.fill();ctx.strokeStyle="#fff";ctx.lineWidth=2;ctx.stroke();
+
+    requestAnimationFrame(gameLoop);
+}
+
+//游戏初始化启动
+initWallBox();
+updateUI();
+setInterval(spawnZombie,1200);
+setInterval(spawnArmorProp,9000);
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>
