@@ -1,410 +1,543 @@
-(<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>谨慎交易查询</title>
-    <style>
-        body { font-family: -apple-system, sans-serif; background: #fdf2f2; display: flex; justify-content: center; padding: 20px; }
-        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
-        h2 { color: #d93025; text-align: center; margin-bottom: 5px; }
-        .version { text-align: center; font-size: 12px; color: #999; margin-bottom: 20px; }
-        
-        .search-box { position: relative; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; border: 2px solid #eee; border-radius: 10px; font-size: 16px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        input:focus { border-color: #d93025; }
-        
-        button { width: 100%; background: #d93025; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
-        button:active { background: #b2261e; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>末日围墙僵尸枪战</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;touch-action:none;user-select:none;}
+body{overflow:hidden;background:#1a1a1a;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;}
+#gameCanvas{border:2px solid #444;background:#2d342c;}
+.topBar{width:92%;max-width:720px;color:#fff;font-size:16px;padding:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+.hpWrap{display:flex;align-items:center;gap:6px}
+.hpBox{width:120px;height:14px;background:#333;border-radius:4px;overflow:hidden;border:1px solid #666;}
+.hpFill{height:100%;background:#e53e3e;transition:0.2s all;}
+.armorText{color:#60a5fa;}
+.gunBar{display:flex;gap:8px;align-items:center;}
+.gunBtn{padding:5px 10px;border:none;border-radius:4px;background:#555;color:#fff;font-size:14px;cursor:pointer;}
+.gunBtn.active{background:#d93025;}
+.shopBtn{padding:6px 12px;border:none;border-radius:4px;background:#f59e0b;color:#fff;font-weight:bold;cursor:pointer;}
+.tipText{color:#aaa;font-size:13px;margin-top:6px;text-align:center;}
 
-        #resultArea { display: none; margin-top: 25px; border-top: 2px dashed #ffcccc; padding-top: 20px; text-align: left; }
-        .warning-title { color: #d93025; font-weight: bold; font-size: 18px; margin-bottom: 10px; }
-        .story-box { background: #fff8f8; border: 1px solid #ffcccc; padding: 15px; border-radius: 8px; color: #444; line-height: 1.6; font-size: 15px; }
-        #emptyMsg { display: none; color: #28a745; text-align: center; margin-top: 20px; font-weight: bold; }
-        
-        .disclaimer { margin-top: 30px; font-size: 11px; color: #999; line-height: 1.4; text-align: justify; }
-    </style>
+/* 商店弹窗全局样式 */
+.shopMask{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.85);display:none;justify-content:center;align-items:center;z-index:9999;}
+.shopBox{background:#222;border:2px solid #f59e0b;border-radius:12px;padding:20px;width:90%;max-width:420px;color:#fff;}
+.shopTitle{text-align:center;font-size:22px;font-weight:bold;color:#f59e0b;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #444;}
+.shopGold{text-align:right;margin-bottom:15px;font-size:16px;color:#ffd700;}
+.shopItem{display:flex;justify-content:space-between;align-items:center;padding:12px 8px;border-bottom:1px solid #333;}
+.itemName{font-size:15px;}
+.itemPrice{color:#ffd700;margin:0 10px;}
+.buyBtn{padding:4px 10px;background:#16a34a;border:none;border-radius:4px;color:#fff;cursor:pointer;}
+.closeShop{width:100%;margin-top:20px;padding:10px;background:#d93025;border:none;border-radius:6px;color:#fff;font-size:16px;cursor:pointer;}
+</style>
 </head>
 <body>
-
-<div class="card">
-    <h2>谨慎交易查询</h2>
-    <div class="version">数据版本：1.1.0 (2026/3/29)</div>
-
-    <div class="search-box">
-        <input type="number" id="qqInput" placeholder="输入可疑 QQ 号码进行核实...">
-        <button onclick="checkScammer()">立即核查</button>
+<div class="topBar">
+    <div class="hpWrap">
+        <span>生命值</span>
+        <div class="hpBox"><div class="hpFill" id="hpFill"></div></div>
+        <span class="armorText">护甲:<span id="armorNum">0</span></span>
     </div>
-
-    <div id="resultArea">
-        <div class="warning-title">⚠️ 查获不良记录：</div>
-        <div id="scamStory" class="story-box"></div>
+    <div>金币:<span id="goldNum" style="color:#ffd700;">0</span> | 弹药:<span id="ammoNum">12</span></div>
+    <div class="gunBar">
+        <button class="gunBtn active" data-gun="pistol">手枪</button>
+        <button class="gunBtn lock" data-gun="rifle" style="background:#222;color:#888;cursor:not-allowed;">步枪🔒</button>
+        <button class="gunBtn lock" data-gun="shotgun" style="background:#222;color:#888;cursor:not-allowed;">霰弹枪🔒</button>
+        <button class="gunBtn lock" data-gun="sniper" style="background:#222;color:#888;cursor:not-allowed;">狙击枪🔒</button>
+        <button class="shopBtn" onclick="openShop()">商店</button>
     </div>
+</div>
+<canvas id="gameCanvas"></canvas>
+<div class="tipText">拖动屏幕拉出红线瞄准，松手开火；手枪/步枪长按固定位置自动连发，僵尸可绕墙追踪你</div>
 
-    <div id="emptyMsg">✅ 暂无不良记录</div>
-
-    <div class="disclaimer">
-        免责声明：本系统仅供参考，数据不代表官方定论，有任何想举报可疑人员加QQ：2409595748
+<!-- 商店弹窗 -->
+<div class="shopMask" id="shopMask">
+    <div class="shopBox">
+        <div class="shopTitle">武器弹药商店</div>
+        <div class="shopGold">当前持有金币：<span id="shopGoldShow">0</span></div>
+        <div class="shopList">
+            <div class="shopItem">
+                <span class="itemName">解锁全自动步枪 含30发备弹</span>
+                <span class="itemPrice">50金币</span>
+                <button class="buyBtn" onclick="buyGoods('unlockRifle',50)">购买解锁</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">解锁霰弹枪 含10发备弹</span>
+                <span class="itemPrice">80金币</span>
+                <button class="buyBtn" onclick="buyGoods('unlockShotgun',80)">购买解锁</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">解锁狙击枪 含10发备弹</span>
+                <span class="itemPrice">120金币</span>
+                <button class="buyBtn" onclick="buyGoods('unlockSniper',120)">购买解锁</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">手枪补充满弹12发</span>
+                <span class="itemPrice">10金币</span>
+                <button class="buyBtn" onclick="buyGoods('ammoPistol',10)">购买</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">步枪补充满弹30发</span>
+                <span class="itemPrice">15金币</span>
+                <button class="buyBtn" onclick="buyGoods('ammoRifle',15)">购买</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">霰弹枪补充满弹10发</span>
+                <span class="itemPrice">20金币</span>
+                <button class="buyBtn" onclick="buyGoods('ammoShotgun',20)">购买</button>
+            </div>
+            <div class="shopItem">
+                <span class="itemName">狙击枪补充满弹10发</span>
+                <span class="itemPrice">25金币</span>
+                <button class="buyBtn" onclick="buyGoods('ammoSniper',25)">购买</button>
+            </div>
+        </div>
+        <button class="closeShop" onclick="closeShop()">关闭商店返回游戏</button>
     </div>
 </div>
 
 <script>
-    // 这是根据你提供的图片整理的部分数据库
-    const scamList = [
-        { qq: "123", story: "存在交易异常记录，请谨慎交易" },
-        { qq: "1028846991", story: "存在交易异常记录，请谨慎交易" },
-        { qq: "1169924475", story: "存在交易纠纷举报记录（涉及第三方平台），请注意风险" },
-        { qq: "1209074558", story: "存在平台交易相关举报记录，请谨慎判断" },
-        { qq: "1330622484", story: "存在未完成交易的举报记录" },
-        { qq: "1337528652", story: "存在账号交易纠纷记录，请注意风险" },
-        { qq: "1359157897", story: "存在未完成交易记录，请谨慎交易" },
-        { qq: "1414105157", story: "存在平台交易相关举报记录" },
-        { qq: "1439820633", story: "存在虚拟物品交易争议记录" },
-        { qq: "1491960597", story: "存在用户举报记录，请谨慎判断" },
-        { qq: "15609579182", story: "存在异常行为举报记录" },
-        { qq: "1589410880", story: "存在账号使用异常相关举报记录" },
-        { qq: "1620966581", story: "存在用户举报记录，请注意风险" },
-        { qq: "1795296837", story: "存在虚拟物品交易争议记录" },
-        { qq: "18209584484", story: "存在用户举报记录" },
-        { qq: "1831990185", story: "存在较大金额交易争议记录，请谨慎交易" },
-        { qq: "1935331873", story: "存在未完成交易举报记录" },
-        { qq: "1951712215", story: "存在账号验证相关异常举报记录" },
-        { qq: "2116773754", story: "存在用户举报记录，请谨慎判断" },
-        { qq: "2130569390", story: "存在用户举报记录" },
-        { qq: "2215098722", story: "存在交易异常情况举报记录" },
-        { qq: "2276160227", story: "存在小额交易争议记录" },
-        { qq: "2966224238", story: "存在交易纠纷举报记录（涉及其他联系方式）" },
-        { qq: "229813167", story: "存在账号异常操作相关举报记录" },
-        { qq: "2377127608", story: "存在纠纷相关举报记录，请谨慎判断" },
-        { qq: "2436631430", story: "存在用户举报记录" },
-        { qq: "2463863949", story: "存在信息异常使用相关举报记录" },
-        { qq: "257931470", story: "存在账号交易争议记录" },
-        { qq: "260927151", story: "存在平台交易相关举报记录" },
-        { qq: "2687295225", story: "存在用户举报记录" },
-        { qq: "2696681238", story: "存在关联账号争议记录，请注意风险" },
-        { qq: "3129660798", story: "存在虚拟物品交易争议记录" },
-        { qq: "3164524336", story: "存在账号交易后续争议记录" },
-        { qq: "323262698", story: "存在小额交易异常记录" },
-        { qq: "3243882716", story: "存在账号交易争议记录（涉及其他平台）" },
-        { qq: "3401900584", story: "存在用户举报记录" },
-        { qq: "3410324044", story: "存在账号交易相关争议记录" },
-        { qq: "3484116372", story: "存在多次举报记录，请谨慎判断" },
-        { qq: "3511385803", story: "存在虚拟物品交易争议记录" },
-        { qq: "3584885560", story: "存在跨平台相关举报记录" },
-        { qq: "3831304041", story: "存在异常行为举报记录（涉及联系方式）" },
-        { qq: "3869008939", story: "存在代操作相关争议记录" },
-        { qq: "3938725603", story: "存在多账号相关争议记录" },
-        { qq: "3966017037", story: "存在服务交易争议记录" },
-        { qq: "434470939", story: "存在先付款交易争议记录" },
-        { qq: "450065647", story: "存在交易纠纷记录" },
-        { qq: "481711196", story: "存在相关举报记录（含证据）" },
-        { qq: "544030554", story: "存在账号真实性争议记录" },
-        { qq: "695483835", story: "存在相关举报记录（含证据）" },
-        { qq: "758678273", story: "存在用户举报记录" },
-        { qq: "805572733", story: "存在交易沟通异常记录" },
-        { qq: "859667068", story: "存在争议性交易记录，请谨慎判断" },
-        { qq: "9784299982", story: "存在虚拟物品交易争议记录" },
-        { qq: "2310359271", story: "存在虚拟物品交易争议记录" },
-     ];
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+let canvasW,canvasH;
+// 画布自适应
+function resizeGame(){
+    canvasW = Math.min(window.innerWidth - 20, 720);
+    canvasH = Math.min(window.innerHeight - 200, 700);
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+}
+resizeGame();
+window.addEventListener('resize',resizeGame);
 
-    function checkScammer() {
-        const val = document.getElementById('qqInput').value.trim();
-        const resArea = document.getElementById('resultArea');
-        const storyDiv = document.getElementById('scamStory');
-        const emptyMsg = document.getElementById('emptyMsg');
+// 枪械全局配置 全贴合操作要求
+const gunConfig = {
+    pistol: {maxAmmo:12,autoFire:true,name:"小手枪",damage:10,unlock:true},
+    rifle: {maxAmmo:30,autoFire:true,name:"全自动步枪",damage:15,unlock:false},
+    shotgun: {maxAmmo:10,autoFire:false,name:"霰弹枪",damage:8,bulletNum:6,unlock:false},
+    sniper: {maxAmmo:10,autoFire:false,name:"狙击枪",damage:80,unlock:false}
+};
+let nowGun = "pistol";
+let nowAmmo = gunConfig.pistol.maxAmmo;
+let totalGold = 0;
 
-        if (!val) return;
+// 玩家基础属性
+const player = {
+    x: canvasW/2,
+    y: canvasH/2,
+    size:22,
+    speed:3.5,
+    hp:100,
+    maxHp:100,
+    armor:0,
+    color:"#34d399"
+};
 
-        const record = scamList.find(item => item.qq === val.toString());
+// 全局游戏变量
+let gameOver = false;
+let zombies = [];
+let walls = [];
+let props = [];
+let keys = {};
+let touchDown = false;
+let aimStartX = 0,aimStartY = 0;
+let aimEndX = 0,aimEndY = 0;
+let autoFireTimer = null;
+let bullets = [];
+const zombieGold = 10; // 所有僵尸统一击杀金币
 
-        if (record) {
-            emptyMsg.style.display = "none";
-            resArea.style.display = "block";
-            storyDiv.innerText = record.story;
-        } else {
-            resArea.style.display = "none";
-            emptyMsg.style.display = "block";
+// 生成方框围墙房屋障碍物
+function initWallBox(){
+    walls = [];
+    // 随机生成方框围墙
+    for(let i=0;i=6;i++){
+        const w = 70 + Math.random()*50;
+        const h = 70 + Math.random()*50;
+        walls.push({
+            x:60+Math.random()*(canvasW-120-w),
+            y:60+Math.random()*(canvasH-120-h),
+            w:w,h:h
+        });
+    }
+}
+
+// 碰撞通用检测
+function pointInRect(px,py,rect){
+    return px > rect.x && px < rect.x+rect.w && py > rect.y && py < rect.y+rect.h;
+}
+function circleCollide(a,b,r1,r2){
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return Math.sqrt(dx*dx+dy*dy) < r1+r2;
+}
+// 圆形与墙体碰撞检测 禁止穿墙
+function circleHitWall(obj,r){
+    for(let wall of walls){
+        if(pointInRect(obj.x,obj.y,wall)) return true;
+        if(pointInRect(obj.x-r,obj.y,wall)) return true;
+        if(pointInRect(obj.x+r,obj.y,wall)) return true;
+        if(pointInRect(obj.x,obj.y-r,wall)) return true;
+        if(pointInRect(obj.x,obj.y+r,wall)) return true;
+    }
+    return false;
+}
+
+// 僵尸智能绕墙寻路移动
+function zombieMoveFindPath(zom){
+    const baseAng = Math.atan2(player.y - zom.y, player.x - zom.x);
+    let moveX = Math.cos(baseAng) * zom.speed;
+    let moveY = Math.sin(baseAng) * zom.speed;
+
+    // 预判前方撞墙，切换绕行方向
+    let testZ = {...zom};
+    testZ.x += moveX;
+    testZ.y += moveY;
+    if(circleHitWall(testZ,zom.size)){
+        moveX = Math.cos(baseAng + Math.PI/3) * zom.speed;
+        moveY = Math.sin(baseAng + Math.PI/3) * zom.speed;
+        testZ.x = zom.x + moveX;
+        testZ.y = zom.y + moveY;
+        if(circleHitWall(testZ,zom.size)){
+            moveX = Math.cos(baseAng - Math.PI/3) * zom.speed;
+            moveY = Math.sin(baseAng - Math.PI/3) * zom.speed;
         }
     }
-</script>
+    zom.x += moveX;
+    zom.y += moveY;
+    // 边界限位
+    zom.x = Math.max(zom.size, Math.min(canvasW-zom.size,zom.x));
+    zom.y = Math.max(zom.size, Math.min(canvasH-zom.size,zom.y));
+}
 
-</body>
-</html>
-
-
-<!-- 举报按钮 -->
-<button id="reportBtn" style="
-    position: absolute;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    border: none;
-    background-color: #fff3cd;
-    color: #856404;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Arial, sans-serif;
-    cursor: pointer;
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-">
-    <span style="font-size:20px;">⚠️</span>
-    <span style="font-size:12px; margin-top:2px;">报告</span>
-</button>
-
-<script>
-const reportBtn = document.getElementById('reportBtn');
-const card = document.querySelector('.card');
-const horizontalOffset = 0; // 横向微调
-const verticalOffset = 15;  // 按钮与下方框的间距
-
-// 初始加入页面
-document.body.appendChild(reportBtn);
-
-function updateReportButton() {
-    const resArea = document.getElementById('resultArea');
-    const emptyMsg = document.getElementById('emptyMsg');
-
-    // 横向对齐卡片左边缘
-    const rect = card.getBoundingClientRect();
-    reportBtn.style.left = (window.scrollX + rect.left + horizontalOffset) + 'px';
-
-    // 纵向：根据当前显示内容选择底部
-    let topOffset;
-    if (resArea.style.display !== 'none') {
-        topOffset = window.scrollY + resArea.getBoundingClientRect().bottom + verticalOffset;
-    } else if (emptyMsg.style.display !== 'none') {
-        topOffset = window.scrollY + emptyMsg.getBoundingClientRect().bottom + verticalOffset;
-    } else {
-        topOffset = window.scrollY + rect.bottom + verticalOffset;
+// 随机刷新护甲道具
+function spawnArmorProp(){
+    if(gameOver) return;
+    let newProp;
+    let noWallPos = false;
+    while(!noWallPos){
+        newProp = {
+            x:Math.random()*(canvasW-40)+20,
+            y:Math.random()*(canvasH-40)+20,
+            size:16,type:"armor",value:20,color:"#60a5fa"
+        };
+        if(!circleHitWall(newProp,newProp.size)) noWallPos = true;
     }
-
-    reportBtn.style.top = topOffset + 'px';
+    props.push(newProp);
 }
 
-// 点击核查按钮
-function checkScammer() {
-    const val = document.getElementById('qqInput').value.trim();
-    const resArea = document.getElementById('resultArea');
-    const storyDiv = document.getElementById('scamStory');
-    const emptyMsg = document.getElementById('emptyMsg');
+// 多类型彩色标识僵尸生成
+function spawnZombie(){
+    if(gameOver) return;
+    const rand = Math.random();
+    let type = "normal",zColor="#9acd32";//普通僵尸黄绿色
+    if(rand>0.75){type="dash";zColor="#ffc107";}//冲刺僵尸亮黄色
+    else if(rand>0.6){type="jump";zColor="#ffff99";}//跳跃僵尸浅黄
+    else if(rand>0.45){type="drag";zColor="#859900";}//拖拽僵尸深绿
 
-    if (!val) return;
-
-    const record = scamList.find(item => item.qq === val.toString());
-
-    if (record) {
-        emptyMsg.style.display = "none";
-        resArea.style.display = "block";
-        storyDiv.innerText = record.story;
-    } else {
-        resArea.style.display = "none";
-        emptyMsg.style.display = "block";
+    let zx,zy;
+    const side = Math.floor(Math.random()*4);
+    switch(side){
+        case 0:zx=Math.random()*canvasW;zy=-25;break;
+        case 1:zx=canvasW+25;zy=Math.random()*canvasH;break;
+        case 2:zx=Math.random()*canvasW;zy=canvasH+25;break;
+        case 3:zx=-25;zy=Math.random()*canvasH;break;
     }
+    let speed=1.3,hp=40,size=19,skillCd=0;
+    if(type==="dash"){speed=2.8;hp=30;size=17;}
+    if(type==="jump"){speed=1.6;hp=35;size=18;}
+    if(type==="drag"){speed=1.1;hp=60;size=23;}
 
-    // 核查后立即更新举报按钮位置
-    updateReportButton();
+    zombies.push({x:zx,y:zy,size,speed,hp,type,skillCd,color:zColor,hurtCd:0});
 }
 
-// 按钮点击跳转
-reportBtn.onclick = function() {
-    window.open('https://docs.qq.com/form/page/DS09qRU1zS2NZYk5u', '_blank');
-};
-</script>
-
-
-
-
-
-<!-- 👇👇👇 全部写在底下（可以这样干） -->
-
-<style>
-.info-trigger {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    width: 32px;
-    height: 32px;
-    border: 2px solid #999;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    color: #999;
-    background: #fff;
-    cursor: pointer;
-    z-index: 1000;
-    transition: 0.3s;
+// 商店全局函数
+function openShop(){
+    document.getElementById('shopGoldShow').innerText = totalGold;
+    document.getElementById('shopMask').style.display = 'flex';
+    clearInterval(autoFireTimer);
+    touchDown = false;
 }
-.info-trigger:hover {
-    color: #1677ff;
-    border-color: #1677ff;
+function closeShop(){
+    document.getElementById('shopMask').style.display = 'none';
 }
-
-/* 遮罩 */
-.modal-mask {
-    position: fixed;
-    top:0;left:0;
-    width:100%;height:100%;
-    background: rgba(0,0,0,0.4);
-    display: none;
-    justify-content:center;
-    align-items:center;
-    z-index: 999;
-}
-
-/* 弹窗 */
-.modal-content {
-    background: white;
-    padding: 20px;
-    width: 320px;
-    border-radius: 10px;
+function buyGoods(type,cost){
+    if(totalGold < cost){
+        alert("金币不足，无法购买！");
+        return;
+    }
+    totalGold -= cost;
+    switch(type){
+        case 'unlockRifle':
+            gunConfig.rifle.unlock = true;
+            document.querySelector('[data-gun="rifle"]').classList.remove('lock');
+            document.querySelector('[data-gun="rifle"]').style.background='#555';
+            document.querySelector('[data-gun="rifle"]').style.color='#fff';
+            document.querySelector('[data-gun="rifle"]').style.cursor='pointer';
+            nowAmmo = gunConfig.rifle.maxAmmo;
+            break;
+        case 'unlockShotgun':
+            gunConfig.shotgun.unlock = true;
+            document.querySelector('[data-gun="shotgun"]').classList.remove('lock');
+            document.querySelector('[data-gun="shotgun"]').style.background='#555';
+            document.querySelector('[data-gun="shotgun"]').style.color='#fff';
+            document.querySelector('[data-gun="shotgun"]').style.cursor='pointer';
+            nowAmmo = gunConfig.shotgun.maxAmmo;
+            break;
+        case 'unlockSniper':
+            gunConfig.sniper.unlock = true;
+            document.querySelector('[data-gun="sniper"]').classList.remove('lock');
+            document.querySelector('[data-gun="sniper"]').style.background='#555';
+            document.querySelector('[data-gun="sniper"]').style.color='#fff';
+            document.querySelector('[data-gun="sniper"]').style.cursor='pointer';
+            nowAmmo = gunConfig.sniper.maxAmmo;
+            break;
+        case 'ammoPistol':nowAmmo=gunConfig.pistol.maxAmmo;break;
+        case 'ammoRifle':nowAmmo=gunConfig.rifle.maxAmmo;break;
+        case 'ammoShotgun':nowAmmo=gunConfig.shotgun.maxAmmo;break;
+        case 'ammoSniper':nowAmmo=gunConfig.sniper.maxAmmo;break;
+    }
+    document.getElementById('shopGoldShow').innerText = totalGold;
+    updateUI();
 }
 
-/* 内容 */
-.modal-body {
-    max-height: 300px;
-    overflow-y: auto;
-    line-height: 1.8;
-    font-size: 14px;
-}
+// 枪械切换绑定
+document.querySelectorAll('.gunBtn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+        if(btn.classList.contains('lock')) return alert('该武器尚未解锁，请前往商店购买');
+        document.querySelectorAll('.gunBtn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        nowGun = btn.dataset.gun;
+        nowAmmo = gunConfig[nowGun].maxAmmo;
+        updateUI();
+        clearInterval(autoFireTimer);
+    });
+});
 
-/* 按钮 */
-.close-btn {
-    margin-top: 15px;
-    width: 100%;
-    padding: 8px;
-    background: #1677ff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-</style>
+// 键盘移动监听
+window.addEventListener('keydown',e=>keys[e.key.toLowerCase()]=true);
+window.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
 
-<!-- 按钮 -->
-<div class="info-trigger" onclick="openModal()">!</div>
-
-<!-- 弹窗 -->
-<div id="modalMask" class="modal-mask">
-    <div class="modal-content">
-        <h3>免责声明</h3>
-        <div class="modal-body">
-            <p>1. 本服务所展示的相关信息均来源于用户提交或公开渠道整理，仅供参考，不代表本网站立场。</p>
-            <p>2. 本网站不对信息的真实性、准确性、完整性或及时性作任何明示或暗示的保证，亦不承担因使用本服务所产生的任何责任。</p>
-            <p>3. 用户在使用本服务时，应自行判断相关信息的真实性与风险，任何因依赖本服务信息而产生的后果，均由用户自行承担。</p>
-            <p>4. 如任何单位或个人认为本网站内容涉嫌侵犯其合法权益（包括但不限于名誉权、隐私权等），请及时与本网站联系并提供相关证明材料，本网站将在核实后依法处理。</p>
-            <p>5. 本网站有权对用户提交的信息进行审核、修改或删除，并保留追究恶意发布、传播不实信息等行为法律责任的权利。</p>
-            <p>6. 本服务仅用于防范诈骗风险提示，不构成对任何个人或账号的事实认定或结论。</p>
-        </div>
-        <button class="close-btn" onclick="closeModal()">我已阅读</button>
-    </div>
-</div>
-
-<script>
-function openModal() {
-    document.getElementById('modalMask').style.display = 'flex';
-}
-
-function closeModal() {
-    document.getElementById('modalMask').style.display = 'none';
-}
-
-document.getElementById('modalMask').addEventListener("click", function(e) {
-    if (e.target === this) {
-        closeModal();
+// 触屏瞄准全逻辑
+canvas.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    if(gameOver||nowAmmo<=0) return;
+    touchDown = true;
+    aimStartX = player.x;
+    aimStartY = player.y;
+    const rect = canvas.getBoundingClientRect();
+    aimEndX = e.touches[0].clientX - rect.left;
+    aimEndY = e.touches[0].clientY - rect.top;
+    if(gunConfig[nowGun].autoFire){
+        autoFireTimer = setInterval(fireBullet,180);
     }
 });
+canvas.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(!touchDown) return;
+    const rect = canvas.getBoundingClientRect();
+    aimEndX = e.touches[0].clientX - rect.left;
+    aimEndY = e.touches[0].clientY - rect.top;
+});
+canvas.addEventListener('touchend',e=>{
+    e.preventDefault();
+    if(!touchDown) return;
+    touchDown = false;
+    if(!gunConfig[nowGun].autoFire){
+        fireBullet();
+    }
+    clearInterval(autoFireTimer);
+});
+
+// 开火函数 子弹撞墙直接销毁
+function fireBullet(){
+    if(nowAmmo<=0||gameOver) return;
+    nowAmmo--;
+    const angle = Math.atan2(aimEndY-player.y,aimEndX-player.x);
+    const cfg = gunConfig[nowGun];
+    if(nowGun==="shotgun"){
+        for(let i=0;i<cfg.bulletNum;i++){
+            const randomAngle = angle + (Math.random()-0.5)*0.4;
+            bullets.push({
+                x:player.x,y:player.y,
+                vx:Math.cos(randomAngle)*9,vy:Math.sin(randomAngle)*9,
+                damage:cfg.damage,size:4
+            });
+        }
+    }else{
+        bullets.push({
+            x:player.x,y:player.y,
+            vx:Math.cos(angle)*11,vy:Math.sin(angle)*11,
+            damage:cfg.damage,size:nowGun==="sniper"?6:4
+        });
+    }
+    updateUI();
+}
+
+// UI刷新
+function updateUI(){
+    document.getElementById('hpFill').style.width = (player.hp/player.maxHp*100)+"%";
+    document.getElementById('armorNum').innerText = player.armor;
+    document.getElementById('ammoNum').innerText = nowAmmo;
+    document.getElementById('goldNum').innerText = totalGold;
+}
+
+// 主游戏循环
+function gameLoop(){
+    if(gameOver){
+        ctx.fillStyle="rgba(0,0,0,0.75)";
+        ctx.fillRect(0,0,canvasW,canvasH);
+        ctx.fillStyle="#fff";
+        ctx.font="bold 28px sans-serif";
+        ctx.textAlign="center";
+        ctx.fillText("游戏结束",canvasW/2,canvasH/2-30);
+        ctx.fillText("累计金币："+totalGold,canvasW/2,canvasH/2);
+        ctx.fillText("刷新页面重新游玩",canvasW/2,canvasH/2+40);
+        requestAnimationFrame(gameLoop);
+        return;
+    }
+    ctx.clearRect(0,0,canvasW,canvasH);
+
+    // 玩家移动+穿墙限制
+    let px = player.x, py = player.y;
+    if(keys['w']||keys['arrowup']) py-=player.speed;
+    if(keys['s']||keys['arrowdown']) py+=player.speed;
+    if(keys['a']||keys['arrowleft']) px-=player.speed;
+    if(keys['d']||keys['arrowright']) px+=player.speed;
+    let testP = {x:px,y:py};
+    if(!circleHitWall(testP,player.size)){
+        player.x = Math.max(player.size,Math.min(canvasW-player.size,px));
+        player.y = Math.max(player.size,Math.min(canvasH-player.size,py));
+    }
+
+    // 绘制方框围墙房屋
+    walls.forEach(wall=>{
+        ctx.strokeStyle="#5c5c5c";
+        ctx.lineWidth=6;
+        ctx.strokeRect(wall.x,wall.y,wall.w,wall.h);
+        ctx.fillStyle="#3a3a3a";
+        ctx.fillRect(wall.x,wall.y,wall.w,wall.h);
+    });
+
+    // 护甲道具绘制拾取
+    props.forEach((p,idx)=>{
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        ctx.fillStyle=p.color;
+        ctx.fill();
+        ctx.strokeStyle="#fff";
+        ctx.stroke();
+        if(circleCollide(player,p,player.size,p.size)){
+            player.armor = Math.min(100,player.armor+p.value);
+            props.splice(idx,1);
+            updateUI();
+        }
+    });
+
+    // 红色瞄准标线绘制
+    if(touchDown){
+        ctx.beginPath();
+        ctx.moveTo(player.x,player.y);
+        ctx.lineTo(aimEndX,aimEndY);
+        ctx.strokeStyle="#ef4444";
+        ctx.lineWidth=3;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(aimEndX,aimEndY,7,0,Math.PI*2);
+        ctx.fillStyle="#ef4444";
+        ctx.fill();
+    }
+
+    // 子弹更新 撞墙消失+僵尸命中
+    bullets.forEach((b,bi)=>{
+        b.x+=b.vx;b.y+=b.vy;
+        // 子弹撞墙直接销毁
+        if(circleHitWall(b,b.size)){
+            bullets.splice(bi,1);
+            return;
+        }
+        ctx.beginPath();
+        ctx.arc(b.x,b.y,b.size,0,Math.PI*2);
+        ctx.fillStyle="#fbbf24";
+        ctx.fill();
+        // 边界清除
+        if(b.x<0||b.x>canvasW||b.y<0||b.y>canvasH){
+            bullets.splice(bi,1);return;
+        }
+        // 命中僵尸
+        zombies.forEach((z,zi)=>{
+            if(circleCollide(b,z,b.size,z.size)){
+                z.hp-=b.damage;
+                bullets.splice(bi,1);
+                if(z.hp<=0){
+                    zombies.splice(zi,1);
+                    totalGold += zombieGold;
+                    updateUI();
+                }
+            }
+        });
+    });
+
+    // 僵尸AI全逻辑 绕墙追踪+技能+伤害
+    zombies.forEach(z=>{
+        zombieMoveFindPath(z);
+        z.skillCd--;
+        // 特色僵尸技能
+        if(z.type==="dash"&&z.skillCd<=0){
+            z.speed=5;z.skillCd=90;
+        }else if(z.type==="jump"&&z.skillCd<=0){
+            const jumpAng = Math.atan2(player.y-z.y,player.x-z.x);
+            z.x+=Math.cos(jumpAng)*60;
+            z.y+=Math.sin(jumpAng)*60;
+            z.skillCd=120;
+        }else if(z.type==="drag"&&circleCollide(player,z,player.size+5,z.size)&&z.skillCd<=0){
+            player.hp-=8;
+            z.skillCd=60;
+            updateUI();
+        }
+        if(z.type!=="dash") z.speed=z.type==="normal"?1.3:1.1;
+
+        // 玩家受伤 护甲优先承伤
+        if(circleCollide(player,z,player.size,z.size)&&z.hurtCd<=0){
+            z.hurtCd=25;
+            let hurt = 12;
+            if(player.armor>0){
+                const cut = Math.min(player.armor,hurt);
+                player.armor-=cut;
+                hurt-=cut;
+            }
+            player.hp-=hurt;
+            updateUI();
+            if(player.hp<=0) gameOver=true;
+        }
+
+        // 绘制彩色圆形僵尸标识
+        ctx.beginPath();
+        ctx.arc(z.x,z.y,z.size,0,Math.PI*2);
+        ctx.fillStyle=z.color;
+        ctx.fill();
+        ctx.strokeStyle="#000";
+        ctx.lineWidth=1;
+        ctx.stroke();
+    });
+
+    // 绘制玩家
+    ctx.beginPath();
+    ctx.arc(player.x,player.y,player.size,0,Math.PI*2);
+    ctx.fillStyle=player.color;
+    ctx.fill();
+    ctx.strokeStyle="#fff";
+    ctx.lineWidth=2;
+    ctx.stroke();
+
+    requestAnimationFrame(gameLoop);
+}
+
+// 游戏初始化启动
+initWallBox();
+updateUI();
+setInterval(spawnZombie,1100);
+setInterval(spawnArmorProp,8000);
+gameLoop();
 </script>
-
-<!-- ===== 免责声明模块结束 ===== -->
-
-<div id="islandAd">
-  <span class="text">
-    南部战区｜一起玩 加入QQ群：
-    <a href="https://qm.qq.com/q/PIFlDx0huc" target="_blank">480430023</a>
-  </span>
-  <span class="close" onclick="closeAd()">✖</span>
-</div>
-
-<style>
-#islandAd {
-  position: fixed;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  /* 🔥 自适应宽度 */
-  width: auto;
-  max-width: 92%;
-
-  /* 🔥 更扁 */
-  padding: 8px 16px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  /* 🔥 更柔和渐变（中间亮，两边不死黑） */
-  background: linear-gradient(
-    135deg,
-    #2a2a2a 0%,
-    #555 50%,
-    #2a2a2a 100%
-  );
-
-  color: white;
-  border-radius: 999px;
-
-  box-shadow: 
-    0 6px 18px rgba(0,0,0,0.5),
-    inset 0 0 6px rgba(255,255,255,0.08);
-
-  z-index: 9999;
-}
-
-/* 🔥 一行 + 自适应 */
-.text {
-  font-size: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.text a {
-  color: #ffffff;
-  text-decoration: underline;
-  font-weight: bold;
-  margin-left: 6px;
-}
-
-/* 关闭按钮 */
-.close {
-  margin-left: 10px;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-/* 🔥 手机优化 */
-@media (max-width: 600px) {
-  .text {
-    font-size: 14px;
-  }
-
-  #islandAd {
-    padding: 6px 12px;
-  }
-}
-</style>
-
-<script>
-function closeAd() {
-  document.getElementById("islandAd").style.display = "none";
-}
-</script>
-
-
-
+</body>
+</html>
