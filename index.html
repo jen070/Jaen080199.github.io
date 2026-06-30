@@ -1,7 +1,7 @@
 from microbit import *
 import music
 
-# 起风了主旋律
+# 起风了副歌旋律
 song = [
 "G4:8","E4:8","D4:8","C4:8","D4:4","r:8",
 "G4:8","E4:8","D4:8","E4:8","G4:4","r:8",
@@ -13,7 +13,10 @@ song = [
 
 music.set_tempo(bpm=110)
 
+# 自定义音符图案，替代不存在的Image.MUSIC
+note_img = Image("00900:09990:00900:00900:99999")
+
 while True:
-    display.show(Image.MUSIC)
+    display.show(note_img)
     music.play(song, wait=False, loop=True)
     sleep(1000)
