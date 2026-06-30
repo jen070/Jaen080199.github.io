@@ -1,22 +1,27 @@
 from microbit import *
 import music
 
-# 起风了副歌旋律
+# 起风了精简优化旋律，缩短长音、节奏更流畅
 song = [
-"G4:8","E4:8","D4:8","C4:8","D4:4","r:8",
-"G4:8","E4:8","D4:8","E4:8","G4:4","r:8",
-"A4:8","G4:8","E4:8","D4:8","C4:4","r:8",
-"D4:8","E4:8","G4:8","A4:8","G4:2",
-"G4:8","E4:8","D4:8","C4:8","D4:4","r:8",
-"G4:8","E4:8","A4:8","G4:8","E4:4","r:8"
+"G4:8","E4:8","D4:8","C4:8","D4:4","r:16",
+"G4:8","E4:8","D4:8","E4:8","G4:4","r:16",
+"A4:8","G4:8","E4:8","D4:8","C4:4","r:16",
+"D4:8","E4:8","G4:8","A4:8","G4:4",
+"G4:8","E4:8","D4:8","C4:8","D4:4","r:16",
+"G4:8","E4:8","A4:8","G4:8","E4:4","r:16"
 ]
 
-music.set_tempo(bpm=110)
-
-# 自定义音符图案，替代不存在的Image.MUSIC
+# 加快节拍，减少拖音
+music.set_tempo(bpm=130)
+# 自定义音符画面
 note_img = Image("00900:09990:00900:00900:99999")
+
+# 标记音乐是否正在播放，避免循环重复触发
+playing = False
 
 while True:
     display.show(note_img)
-    music.play(song, wait=False, loop=True)
-    sleep(1000)
+    if not playing:
+        music.play(song, wait=True)
+        playing = False
+    sleep(200)
