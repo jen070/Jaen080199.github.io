@@ -1,27 +1,25 @@
 from microbit import *
-import music
-
-# 起风了精简优化旋律，缩短长音、节奏更流畅
-song = [
-"G4:8","E4:8","D4:8","C4:8","D4:4","r:16",
-"G4:8","E4:8","D4:8","E4:8","G4:4","r:16",
-"A4:8","G4:8","E4:8","D4:8","C4:4","r:16",
-"D4:8","E4:8","G4:8","A4:8","G4:4",
-"G4:8","E4:8","D4:8","C4:8","D4:4","r:16",
-"G4:8","E4:8","A4:8","G4:8","E4:4","r:16"
-]
-
-# 加快节拍，减少拖音
-music.set_tempo(bpm=130)
-# 自定义音符画面
-note_img = Image("00900:09990:00900:00900:99999")
-
-# 标记音乐是否正在播放，避免循环重复触发
-playing = False
-
-while True:
-    display.show(note_img)
-    if not playing:
-        music.play(song, wait=True)
-        playing = False
-    sleep(200)
+import random
+px=2
+blocks=[]
+while 1:
+    display.clear()
+    if button_a.was_pressed()and px>0:px-=1
+    if button_b.was_pressed()and px<4:px+=1
+    if random.randint(0,3)==0:
+        blocks.append([random.randint(0,4),0])
+    for b in blocks:b[1]+=1
+    blocks=[b for b in blocks if b[1]<=4]
+    hit=0
+    for x,y in blocks:
+        if x==px and y==4:hit=1
+    if hit:
+        display.show(Image.SAD)
+        sleep(1000)
+        px=2
+        blocks=[]
+        continue
+    display.set_pixel(px,4,9)
+    for x,y in blocks:
+        display.set_pixel(x,y,6)
+    sleep(300)
