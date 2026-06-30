@@ -1,67 +1,25 @@
 from microbit import *
 import random
-
-# 初始化蛇、移动方向、食物
-snake = [(2, 2)]
-dir_x, dir_y = 1, 0
-food = (random.randint(0, 4), random.randint(0, 4))
-
-while True:
-    # 按键控制方向
-    if button_a.was_pressed() and dir_y != 1:
-        dir_x, dir_y = 0, -1
-    if button_b.was_pressed() and dir_y != -1:
-        dir_x, dir_y = 0, 1
-    if accelerometer.is_gesture("left") and dir_x != 1:
-        dir_x, dir_y = -1, 0
-    if accelerometer.is_gesture("right") and dir_x != -1:
-        dir_x, dir_y = 1, 0
-
-    # 生成新蛇头
-    head_x, head_y = snake[0]
-    new_head = (head_x + dir_x, head_y + dir_y)
-
-    # 撞墙判定
-    nx, ny = new_head
-    if nx < 0 or nx > 4 or ny < 0 or ny > 4:
-        display.show(Image.SAD)
-        sleep(1000)
-        # 重置游戏
-        snake = [(2, 2)]
-        dir_x, dir_y = 1, 0
-        food = (random.randint(0, 4), random.randint(0, 4))
-        continue
-
-    # 撞到自己判定
-    if new_head in snake:
-        display.show(Image.SAD)
-        sleep(1000)
-        snake = [(2, 2)]
-        dir_x, dir_y = 1, 0
-        food = (random.randint(0, 4), random.randint(0, 4))
-        continue
-
-    # 蛇头加入最前面
-    snake.insert(0, new_head)
-
-    # 吃到食物
-    if new_head == food:
-        # 生成新食物，不能出现在蛇身上
-        while True:
-            food = (random.randint(0, 4), random.randint(0, 4))
-            if food not in snake:
-                break
-    else:
-        # 没吃到就去掉尾巴
-        snake.pop()
-
-    # 清屏绘制
+px=2
+blocks=[]
+while 1:
     display.clear()
-    # 画蛇
-    for x, y in snake:
-        display.set_pixel(x, y, 9)
-    # 画食物
-    fx, fy = food
-    display.set_pixel(fx, fy, 5)
-
+    if button_a.was_pressed()and px>0:px-=1
+    if button_b.was_pressed()and px<4:px+=1
+    if random.randint(0,3)==0:
+        blocks.append([random.randint(0,4),0])
+    for b in blocks:b[1]+=1
+    blocks=[b for b in blocks if b[1]<=4]
+    hit=0
+    for x,y in blocks:
+        if x==px and y==4:hit=1
+    if hit:
+        display.show(Image.SAD)
+        sleep(1000)
+        px=2
+        blocks=[]
+        continue
+    display.set_pixel(px,4,9)
+    for x,y in blocks:
+        display.set_pixel(x,y,6)
     sleep(300)
