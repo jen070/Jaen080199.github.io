@@ -1,25 +1,19 @@
 from microbit import *
-import random
-px=2
-blocks=[]
-while 1:
-    display.clear()
-    if button_a.was_pressed()and px>0:px-=1
-    if button_b.was_pressed()and px<4:px+=1
-    if random.randint(0,3)==0:
-        blocks.append([random.randint(0,4),0])
-    for b in blocks:b[1]+=1
-    blocks=[b for b in blocks if b[1]<=4]
-    hit=0
-    for x,y in blocks:
-        if x==px and y==4:hit=1
-    if hit:
-        display.show(Image.SAD)
-        sleep(1000)
-        px=2
-        blocks=[]
-        continue
-    display.set_pixel(px,4,9)
-    for x,y in blocks:
-        display.set_pixel(x,y,6)
-    sleep(300)
+import music
+
+# 起风了主旋律
+song = [
+"G4:8","E4:8","D4:8","C4:8","D4:4","r:8",
+"G4:8","E4:8","D4:8","E4:8","G4:4","r:8",
+"A4:8","G4:8","E4:8","D4:8","C4:4","r:8",
+"D4:8","E4:8","G4:8","A4:8","G4:2",
+"G4:8","E4:8","D4:8","C4:8","D4:4","r:8",
+"G4:8","E4:8","A4:8","G4:8","E4:4","r:8"
+]
+
+music.set_tempo(bpm=110)
+
+while True:
+    display.show(Image.MUSIC)
+    music.play(song, wait=False, loop=True)
+    sleep(1000)
