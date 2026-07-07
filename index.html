@@ -1,55 +1,58 @@
-from microbit import *
-import music
-
-# === 《Undertale》(传说之下) - Megalovania 真正完整歌曲版 ===
-
-while True:
     # ---------------------------------------------
-    # 【第一部分：标志性核心前奏乐段】
+    # 【第三部分：高潮延伸】
     # ---------------------------------------------
-    # 1. 根音为 D
-    music.pitch(294, 90); music.pitch(294, 90); music.pitch(587, 180); music.pitch(440, 180)
-    sleep(90)
-    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
-    music.pitch(349, 90); music.pitch(392, 90)
+    music.pitch(880, 180)
+    music.pitch(784, 180)
+    music.pitch(698, 180)
+    music.pitch(659, 180)
 
-    # 2. 根音降为 C
-    music.pitch(262, 90); music.pitch(262, 90); music.pitch(587, 180); music.pitch(440, 180)
-    sleep(90)
-    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
-    music.pitch(349, 90); music.pitch(392, 90)
+    music.pitch(587, 180)
+    music.pitch(659, 180)
+    music.pitch(698, 180)
+    music.pitch(784, 180)
 
-    # 3. 根音降为 B
-    music.pitch(247, 90); music.pitch(247, 90); music.pitch(587, 180); music.pitch(440, 180)
-    sleep(90)
-    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
-    music.pitch(349, 90); music.pitch(392, 90)
+    music.pitch(698, 180)
+    music.pitch(659, 180)
+    music.pitch(587, 180)
+    music.pitch(523, 180)
 
-    # 4. 根音降为 Bb
-    music.pitch(233, 90); music.pitch(233, 90); music.pitch(587, 180); music.pitch(440, 180)
     sleep(90)
-    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
-    music.pitch(349, 90); music.pitch(392, 90)
+
+    music.pitch(587, 90)
+    music.pitch(659, 90)
+    music.pitch(698, 90)
+    music.pitch(784, 180)
+
+    music.pitch(698, 90)
+    music.pitch(659, 90)
+    music.pitch(587, 90)
+    music.pitch(523, 180)
+
+    music.pitch(587, 180)
+    music.pitch(698, 180)
+    music.pitch(784, 180)
+    music.pitch(880, 270)
+
+    sleep(120)
 
     # ---------------------------------------------
-    # 【第二部分：主旋律高潮推进乐段（全新变化旋律）】
+    # 【第四部分：结束过渡】
     # ---------------------------------------------
-    # 5. 主旋律开始往高音区攀升，脱离重复
-    music.pitch(587, 180); music.pitch(587, 90); music.pitch(587, 180); music.pitch(587, 90)
-    music.pitch(587, 180); music.pitch(523, 180); music.pitch(587, 180)
-    sleep(90)
-    
-    music.pitch(698, 180); music.pitch(698, 90); music.pitch(698, 180); music.pitch(659, 180)
-    music.pitch(587, 180); music.pitch(523, 180)
-    sleep(90)
+    music.pitch(784, 120)
+    music.pitch(698, 120)
+    music.pitch(659, 120)
+    music.pitch(587, 120)
 
-    # 6. 第二乐句切入，改变节奏型
-    music.pitch(587, 180); music.pitch(587, 90); music.pitch(587, 180); music.pitch(587, 90)
-    music.pitch(587, 180); music.pitch(523, 180); music.pitch(587, 180)
-    sleep(90)
+    music.pitch(523, 180)
+    music.pitch(587, 180)
+    music.pitch(659, 180)
+    music.pitch(698, 180)
 
-    # 7. 标志性的连续半音大转折（这里每个音符都完全不同了！）
-    music.pitch(784, 180); music.pitch(740, 180); music.pitch(698, 180); music.pitch(659, 180)
-    music.pitch(587, 180); music.pitch(698, 180); music.pitch(784, 180); music.pitch(880, 270)
-    
-    # 这一句播完后，代码会自动循环回第 1 步重新开始！
+    music.pitch(587, 180)
+    music.pitch(523, 180)
+    music.pitch(494, 180)
+    music.pitch(440, 360)
+
+    sleep(300)
+
+    # 然后自动回到 while True 开头重新播放
