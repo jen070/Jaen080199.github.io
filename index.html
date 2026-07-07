@@ -1,29 +1,58 @@
 from microbit import *
 import music
 
-# === 前奏部分 ===
-music.pitch(262, 400)  # C4 (261.6Hz)
-music.pitch(392, 400)  # G4 (392.0Hz)
-music.pitch(440, 400)  # A4 (440.0Hz)
-music.pitch(349, 600)  # F4 (349.2Hz)
-sleep(200)             # 呼吸停顿
+# === 周杰伦《晴天》完整副歌（加长版） ===
 
-# === 主歌：数着白键的距离 ===
-music.pitch(262, 400)  # C4
-music.pitch(330, 400)  # E4
-music.pitch(392, 400)  # G4
-music.pitch(392, 400)  # G4
+# 1. "故事的小黄花，从出生那年就飘着"
+music.pitch(294, 200)  # D4
+music.pitch(440, 200)  # A4
+music.pitch(392, 200)  # G4
+music.pitch(440, 400)  # A4 
+sleep(100)
+music.pitch(294, 200)  # D4
+music.pitch(440, 200)  # A4
+music.pitch(392, 200)  # G4
 music.pitch(440, 400)  # A4
-music.pitch(349, 400)  # F4
-music.pitch(392, 600)  # G4
-sleep(300)             # 停顿
+sleep(200)
 
-# === 副歌：440赫兹的灵魂共振 ===
-music.pitch(440, 400)  # A4 (440Hz的倾听)
-music.pitch(659, 400)  # E5 (659.3Hz的回应)
-music.pitch(523, 400)  # C5
+# 2. "童年的荡秋千，随记忆一直晃到现在"
+music.pitch(294, 200)  # D4
+music.pitch(440, 200)  # A4
+music.pitch(392, 200)  # G4
+music.pitch(440, 200)  # A4
+music.pitch(494, 400)  # B4
+sleep(100)
+music.pitch(440, 200)  # A4
+music.pitch(392, 200)  # G4
+music.pitch(349, 200)  # F4
+music.pitch(392, 200)  # G4
 music.pitch(392, 400)  # G4
-music.pitch(349, 400)  # F4
-music.pitch(330, 400)  # E4
-music.pitch(262, 400)  # C4
-music.pitch(262, 800)  # C4 (长音完美收尾)
+music.pitch(349, 600)  # F4
+sleep(300)
+
+# 3. "从前从前有个人爱你很久" (进入高潮！)
+music.pitch(349, 250)  # F4 (从)
+music.pitch(349, 250)  # F4 (前)
+music.pitch(349, 250)  # F4 (从)
+music.pitch(349, 250)  # F4 (前)
+music.pitch(392, 250)  # G4 (有)
+music.pitch(440, 250)  # A4 (个)
+music.pitch(440, 250)  # A4 (人)
+music.pitch(392, 250)  # G4 (爱)
+music.pitch(349, 250)  # F4 (你)
+music.pitch(392, 500)  # G4 (很)
+music.pitch(294, 600)  # D4 (久)
+sleep(200)
+
+# 4. "但偏偏风渐渐把距离吹得好远"
+music.pitch(349, 250)  # F4 (但)
+music.pitch(349, 250)  # F4 (偏)
+music.pitch(349, 250)  # F4 (偏)
+music.pitch(392, 250)  # G4 (风)
+music.pitch(440, 250)  # A4 (渐)
+music.pitch(440, 250)  # A4 (渐)
+music.pitch(392, 250)  # G4 (把)
+music.pitch(349, 250)  # F4 (距)
+music.pitch(392, 250)  # G4 (离)
+music.pitch(392, 500)  # G4 (吹)
+music.pitch(440, 600)  # A4 (远)
