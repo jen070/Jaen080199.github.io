@@ -1,60 +1,55 @@
 from microbit import *
 import music
 
-# === Undertale《Megalovania》终极无缝无限循环版 ===
+# === 《Undertale》(传说之下) - Megalovania 真正完整歌曲版 ===
 
 while True:
-    # ===== 第一遍核心段落 =====
-    music.pitch(294, 90)   # D4
-    music.pitch(294, 90)   # D4
-    music.pitch(587, 180)  # D5
-    music.pitch(440, 180)  # A4
+    # ---------------------------------------------
+    # 【第一部分：标志性核心前奏乐段】
+    # ---------------------------------------------
+    # 1. 根音为 D
+    music.pitch(294, 90); music.pitch(294, 90); music.pitch(587, 180); music.pitch(440, 180)
     sleep(90)
-    music.pitch(415, 130)  # G#4
-    music.pitch(392, 130)  # G4
-    music.pitch(349, 180)  # F4
-    music.pitch(294, 90)   # D4
-    music.pitch(349, 90)   # F4
-    music.pitch(392, 90)   # G4
-    
-    # ===== 第二遍（低音变C） =====
-    music.pitch(262, 90)   # C4
-    music.pitch(262, 90)   # C4
-    music.pitch(587, 180)  # D5
-    music.pitch(440, 180)  # A4
-    sleep(90)
-    music.pitch(415, 130)  # G#4
-    music.pitch(392, 130)  # G4
-    music.pitch(349, 180)  # F4
-    music.pitch(294, 90)   # D4
-    music.pitch(349, 90)   # F4
-    music.pitch(392, 90)   # G4
-    
-    # ===== 第三遍（低音变B） =====
-    music.pitch(247, 90)   # B3
-    music.pitch(247, 90)   # B3
-    music.pitch(587, 180)  # D5
-    music.pitch(440, 180)  # A4
-    sleep(90)
-    music.pitch(415, 130)  # G#4
-    music.pitch(392, 130)  # G4
-    music.pitch(349, 180)  # F4
-    music.pitch(294, 90)   # D4
-    music.pitch(349, 90)   # F4
-    music.pitch(392, 90)   # G4
+    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
+    music.pitch(349, 90); music.pitch(392, 90)
 
-    # ===== 第四遍（低音变Bb） =====
-    music.pitch(233, 90)   # Bb3 (对应表中的233.1Hz)
-    music.pitch(233, 90)   # Bb3
-    music.pitch(587, 180)  # D5
-    music.pitch(440, 180)  # A4
+    # 2. 根音降为 C
+    music.pitch(262, 90); music.pitch(262, 90); music.pitch(587, 180); music.pitch(440, 180)
     sleep(90)
-    music.pitch(415, 130)  # G#4
-    music.pitch(392, 130)  # G4
-    music.pitch(349, 180)  # F4
-    music.pitch(294, 90)   # D4
-    music.pitch(349, 90)   # F4
-    music.pitch(392, 90)   # G4
+    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
+    music.pitch(349, 90); music.pitch(392, 90)
 
-    # 注意：这里没有任何 sleep 停顿！
-    # 代码执行到这里会立刻蹦回最上方重新开始，实现完美无缝的持续轰炸！
+    # 3. 根音降为 B
+    music.pitch(247, 90); music.pitch(247, 90); music.pitch(587, 180); music.pitch(440, 180)
+    sleep(90)
+    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
+    music.pitch(349, 90); music.pitch(392, 90)
+
+    # 4. 根音降为 Bb
+    music.pitch(233, 90); music.pitch(233, 90); music.pitch(587, 180); music.pitch(440, 180)
+    sleep(90)
+    music.pitch(415, 130); music.pitch(392, 130); music.pitch(349, 180); music.pitch(294, 90)
+    music.pitch(349, 90); music.pitch(392, 90)
+
+    # ---------------------------------------------
+    # 【第二部分：主旋律高潮推进乐段（全新变化旋律）】
+    # ---------------------------------------------
+    # 5. 主旋律开始往高音区攀升，脱离重复
+    music.pitch(587, 180); music.pitch(587, 90); music.pitch(587, 180); music.pitch(587, 90)
+    music.pitch(587, 180); music.pitch(523, 180); music.pitch(587, 180)
+    sleep(90)
+    
+    music.pitch(698, 180); music.pitch(698, 90); music.pitch(698, 180); music.pitch(659, 180)
+    music.pitch(587, 180); music.pitch(523, 180)
+    sleep(90)
+
+    # 6. 第二乐句切入，改变节奏型
+    music.pitch(587, 180); music.pitch(587, 90); music.pitch(587, 180); music.pitch(587, 90)
+    music.pitch(587, 180); music.pitch(523, 180); music.pitch(587, 180)
+    sleep(90)
+
+    # 7. 标志性的连续半音大转折（这里每个音符都完全不同了！）
+    music.pitch(784, 180); music.pitch(740, 180); music.pitch(698, 180); music.pitch(659, 180)
+    music.pitch(587, 180); music.pitch(698, 180); music.pitch(784, 180); music.pitch(880, 270)
+    
+    # 这一句播完后，代码会自动循环回第 1 步重新开始！
