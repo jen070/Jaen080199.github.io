@@ -1,60 +1,60 @@
 from microbit import *
 import music
 
-# === 周杰伦《青花瓷》超长完整副歌 ===
+# === Undertale《Megalovania》终极无缝无限循环版 ===
 
-# 1. "天青色等烟雨，而我在等你"
-music.pitch(392, 200)  # G4 (天)
-music.pitch(440, 200)  # A4 (青)
-music.pitch(494, 200)  # B4 (色)
-music.pitch(440, 200)  # A4 (等)
-music.pitch(494, 200)  # B4 (烟)
-music.pitch(587, 400)  # D5 (雨)
-sleep(100)
-music.pitch(494, 200)  # B4 (而)
-music.pitch(440, 200)  # A4 (我)
-music.pitch(392, 200)  # G4 (在)
-music.pitch(349, 200)  # F4 (等)
-music.pitch(294, 600)  # D4 (你)
-sleep(200)
+while True:
+    # ===== 第一遍核心段落 =====
+    music.pitch(294, 90)   # D4
+    music.pitch(294, 90)   # D4
+    music.pitch(587, 180)  # D5
+    music.pitch(440, 180)  # A4
+    sleep(90)
+    music.pitch(415, 130)  # G#4
+    music.pitch(392, 130)  # G4
+    music.pitch(349, 180)  # F4
+    music.pitch(294, 90)   # D4
+    music.pitch(349, 90)   # F4
+    music.pitch(392, 90)   # G4
+    
+    # ===== 第二遍（低音变C） =====
+    music.pitch(262, 90)   # C4
+    music.pitch(262, 90)   # C4
+    music.pitch(587, 180)  # D5
+    music.pitch(440, 180)  # A4
+    sleep(90)
+    music.pitch(415, 130)  # G#4
+    music.pitch(392, 130)  # G4
+    music.pitch(349, 180)  # F4
+    music.pitch(294, 90)   # D4
+    music.pitch(349, 90)   # F4
+    music.pitch(392, 90)   # G4
+    
+    # ===== 第三遍（低音变B） =====
+    music.pitch(247, 90)   # B3
+    music.pitch(247, 90)   # B3
+    music.pitch(587, 180)  # D5
+    music.pitch(440, 180)  # A4
+    sleep(90)
+    music.pitch(415, 130)  # G#4
+    music.pitch(392, 130)  # G4
+    music.pitch(349, 180)  # F4
+    music.pitch(294, 90)   # D4
+    music.pitch(349, 90)   # F4
+    music.pitch(392, 90)   # G4
 
-# 2. "炊烟袅袅升起，隔江千万里"
-music.pitch(392, 200)  # G4 (炊)
-music.pitch(440, 200)  # A4 (烟)
-music.pitch(494, 200)  # B4 (袅)
-music.pitch(440, 200)  # A4 (袅)
-music.pitch(494, 200)  # B4 (升)
-music.pitch(587, 400)  # D5 (起)
-sleep(100)
-music.pitch(494, 200)  # B4 (隔)
-music.pitch(440, 200)  # A4 (江)
-music.pitch(494, 200)  # B4 (千)
-music.pitch(440, 200)  # A4 (万)
-music.pitch(392, 600)  # G4 (里)
-sleep(300)
+    # ===== 第四遍（低音变Bb） =====
+    music.pitch(233, 90)   # Bb3 (对应表中的233.1Hz)
+    music.pitch(233, 90)   # Bb3
+    music.pitch(587, 180)  # D5
+    music.pitch(440, 180)  # A4
+    sleep(90)
+    music.pitch(415, 130)  # G#4
+    music.pitch(392, 130)  # G4
+    music.pitch(349, 180)  # F4
+    music.pitch(294, 90)   # D4
+    music.pitch(349, 90)   # F4
+    music.pitch(392, 90)   # G4
 
-# 3. "在瓶底书汉隶仿前朝的飘逸"
-music.pitch(587, 200)  # D5 (在)
-music.pitch(587, 200)  # D5 (瓶)
-music.pitch(587, 200)  # D5 (底)
-music.pitch(587, 200)  # D5 (书)
-music.pitch(523, 200)  # C5 (汉)
-music.pitch(494, 400)  # B4 (隶)
-music.pitch(440, 200)  # A4 (仿)
-music.pitch(440, 200)  # A4 (前)
-music.pitch(440, 200)  # A4 (朝)
-music.pitch(392, 200)  # G4 (的)
-music.pitch(440, 400)  # A4 (飘)
-music.pitch(494, 400)  # B4 (逸)
-sleep(200)
-
-# 4. "就当我为遇见你伏笔"
-music.pitch(440, 200)  # A4 (就)
-music.pitch(440, 200)  # A4 (当)
-music.pitch(440, 200)  # A4 (我)
-music.pitch(392, 200)  # G4 (为)
-music.pitch(349, 200)  # F4 (遇)
-music.pitch(392, 200)  # G4 (见)
-music.pitch(294, 400)  # D4 (你)
-music.pitch(392, 600)  # G4 (伏)
-music.pitch(440, 800)  # A4 (笔)
+    # 注意：这里没有任何 sleep 停顿！
+    # 代码执行到这里会立刻蹦回最上方重新开始，实现完美无缝的持续轰炸！
