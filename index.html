@@ -1,72 +1,53 @@
-import time
+import music
+from microbit import sleep
 
-# ----------------- 1. 核心音高数据库 (Pitches Data) -----------------
-# 注入 Steely Dan 灵魂：将原曲 Gm-Eb-Bb-F 走向重写为华丽的都市爵士和弦
-CHORD_PROGRESSION = [
-    [43, 55, 57, 58, 62],  # Gm(add9) - 根音G2 + 灵魂二度摩擦音(G3, A3, Bb3, D4)
-    [39, 51, 53, 55, 58],  # Eb(maj9) - 极具游离感的城市霓虹和弦
-    [46, 58, 60, 62, 65],  # Bb(maj9) - 代替原曲普通的Bb大三和弦
-    [41, 53, 55, 57, 60]   # F(add9)  - 留下一丝惆怅的尾音
-]
+# ──【Steely Dan 摇摆律动核心参数】──
+# 调慢速度（约112 BPM），让音符之间带有华丽慵懒的爵士切分感
+BEAT_LONG = 450   # 长音 / 强拍
+BEAT_SHORT = 220  # 短音 / 爵士切分弱拍
+SWING_PAUSE = 80  # 特斯丹风格专属的空隙停顿（营造轻快、高级的空气感）
 
-# 原乐谱第9小节右手的核心旋律音高 (MIDI Pitch 编号)
-MELODY_PITCHES = [74, 70, 69, 67, 70, 69, 67, 65] # D5, Bb4, A4, G4 ...
+print("🎵 正在循环播放 Steely Dan 爵士风格改编版《The Truth That You Leave》（时长约1分钟）...")
 
-# ----------------- 2. 核心控制函数 (The Pitch Method) -----------------
-def play_note(track_id, pitch_val, duration, velocity=80):
-    """
-    底层模拟 music.pitch()：传入音轨、精确音高、持续时间与力度。
-    Steely Dan 风格要求力度极其严谨、没有杂音。
-    """
-    print(f"[Track {track_id}] 发出音高: {pitch_val} (持续: {duration}s, 力度: {velocity})")
-
-# ----------------- 3. 一分钟自动化编曲引擎 (60s Arrange Engine) -----------------
-start_time = time.time()
-bar = 1
-bpm_delay = 0.535  # 112 BPM 律动下，每拍的精准物理时间（秒）
-
-print("🎵 开始在虚拟设备上渲染 60秒《The Truth That You Leave (Steely Dan Style)》...")
-
-while (time.time() - start_time) < 60.0:
-    # 判定当前和弦周期
-    current_chord = CHORD_PROGRESSION[(bar - 1) % 4]
+# 循环 3 次，每次包含前奏和经典副歌，总长度刚好约 60 秒（1分钟）
+for loop in range(3):
     
-    # ──【阶段一：0-8秒 前奏】只渲染 Rhodes 电钢琴
-    if bar <= 4:
-        for pitch in current_chord:
-            play_note("Rhodes_Piano", pitch, duration=bpm_delay*4, velocity=70)
-        time.sleep(bpm_delay * 4) # 走完一小节
-        
-    # ──【阶段二：8-25秒 主歌】加入超级稳健的 Shuffle 鼓点与 Funk 贝斯
-    elif 5 <= bar <= 12:
-        # 贝斯弹奏切分根音
-        play_note("Funk_Bass", current_chord[0], duration=bpm_delay*2, velocity=95)
-        # 右手吉他懒洋洋地跟进
-        play_note("Clean_Guitar", MELODY_PITCHES[(bar-5)%len(MELODY_PITCHES)], duration=bpm_delay, velocity=80)
-        time.sleep(bpm_delay * 4)
-        
-    # ──【阶段三：25-43秒 副歌】铜管乐器华丽爆发
-    elif 13 <= bar <= 20:
-        # 铜管组吹奏密集的高位置九和弦
-        for pitch in current_chord:
-            play_note("Horn_Section", pitch + 12, duration=bpm_delay, velocity=110) # 提高一个八度
-        time.sleep(bpm_delay * 4)
-        
-    # ──【阶段四：43-55秒 吉他独奏】
-    elif 21 <= bar <= 26:
-        # 模拟拉里·卡尔顿式的丝滑半音阶 Solo 走向
-        solo_pitch = current_chord[2] + (bar % 3) 
-        play_note("Jazz_Guitar_Solo", solo_pitch, duration=bpm_delay*0.5, velocity=100)
-        time.sleep(bpm_delay * 4)
-        
-    # ──【阶段五：55-60秒 尾奏渐弱】
-    else:
-        # 最终停留在 G7(alt) 悬浮爵士和弦上渐弱
-        play_note("Rhodes_Piano", 55, duration=5.0, velocity=40)
-        print("🎚️ 触发主输出音轨淡出 (Fade out)...")
-        time.sleep(5.0)
-        break
-
-    bar += 1
-
-print(f"⏱️ 乐曲生成完毕！总运行时间: {round(time.time() - start_time, 2)} 秒。")
+    # === 1. 前奏 [Intro]：标志性爵士 Mu-chord 音高扫弦（0s - 5s / 循环） ===
+    # 模拟复古 Rhodes 电钢琴密集摩擦的爵士和弦音高
+    music.pitch(392, 100) ; sleep(30)   # G4
+    music.pitch(440, 100) ; sleep(30)   # A4 (9音 - 注入特斯丹灵魂)
+    music.pitch(466, 120) ; sleep(30)   # Bb4
+    music.pitch(587, 250) ; sleep(150)  # D5 延长
+    
+    music.pitch(349, 100) ; sleep(30)   # F4
+    music.pitch(392, 100) ; sleep(30)   # G4
+    music.pitch(523, 250) ; sleep(200)  # C5 华丽停顿
+    
+    # === 2. 经典高潮副歌 [Chorus]：融入切分律动的经典旋律（5s - 20s / 循环） ===
+    # --- 小节 1 ---（基于你给出的原思路，但强化了节奏的弹跳感）
+    music.pitch(659, BEAT_LONG)  ; sleep(SWING_PAUSE)  # E5 (原谱高潮第一音)
+    music.pitch(587, BEAT_SHORT) ; sleep(SWING_PAUSE)  # D5
+    music.pitch(659, BEAT_SHORT) ; sleep(SWING_PAUSE)  # E5
+    music.pitch(784, BEAT_LONG)  ; sleep(SWING_PAUSE)  # G5 (向上昂扬)
+    music.pitch(659, BEAT_SHORT) ; sleep(SWING_PAUSE)  # E5
+    music.pitch(587, 500)        ; sleep(120)         # D5 下落并延长
+    
+    # --- 小节 2 ---
+    music.pitch(523, BEAT_LONG)  ; sleep(SWING_PAUSE)  # C5 (你代码最后的那段)
+    music.pitch(587, BEAT_SHORT) ; sleep(SWING_PAUSE)  # D5
+    music.pitch(659, 400)        ; sleep(SWING_PAUSE)  # E5
+    music.pitch(494, BEAT_SHORT) ; sleep(SWING_PAUSE)  # B4 (爵士离调过渡音)
+    music.pitch(440, 600)        ; sleep(200)         # A4 慵懒延长
+    
+    # --- 小节 3 ---（致敬特斯丹的华丽铜管向上爬升）
+    music.pitch(587, BEAT_SHORT) ; sleep(50)           # D5
+    music.pitch(698, BEAT_SHORT) ; sleep(50)           # F5
+    music.pitch(784, BEAT_SHORT) ; sleep(50)           # G5
+    music.pitch(880, BEAT_LONG)  ; sleep(SWING_PAUSE)  # A5 (极具张力的高音)
+    music.pitch(784, BEAT_SHORT) ; sleep(SWING_PAUSE)  # G5
+    music.pitch(698, 550)        ; sleep(150)         # F5
+    
+    # --- 小节 4 ---（高潮收尾，留出空白准备下一次循环）
+    music.pitch(523, BEAT_LONG)  ; sleep(SWING_PAUSE)  # C5
+    music.pitch(587, BEAT_SHORT) ; sleep(SWING_PAUSE)  # D5
+    music.pitch(392, 700)        ; sleep(400)         # 低音 G4 稳定落脚
