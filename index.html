@@ -1,58 +1,32 @@
-music.pitch(392, 150)
-music.pitch(392, 150)
-music.pitch(494, 150)
-music.pitch(587, 200)
+import music
+from microbit import *
 
-music.pitch(494, 150)
-music.pitch(392, 150)
-music.pitch(440, 200)
-
-music.pitch(392, 150)
-music.pitch(392, 150)
-music.pitch(494, 150)
-music.pitch(659, 200)
-
-music.pitch(587, 150)
-music.pitch(494, 150)
-music.pitch(440, 250)
-
-sleep(100)
-
-music.pitch(392, 120)
-music.pitch(494, 120)
-music.pitch(587, 160)
-music.pitch(659, 180)
-
-music.pitch(587, 120)
-music.pitch(494, 120)
-music.pitch(392, 180)
-
-music.pitch(440, 120)
-music.pitch(494, 120)
-music.pitch(659, 160)
-music.pitch(784, 200)
-
-music.pitch(659, 150)
-music.pitch(587, 150)
-music.pitch(494, 220)
-
-sleep(100)
-
-music.pitch(392, 120)
-music.pitch(440, 120)
-music.pitch(494, 120)
-music.pitch(587, 180)
-
-music.pitch(659, 150)
-music.pitch(587, 120)
-music.pitch(494, 120)
-music.pitch(440, 180)
-
-music.pitch(392, 150)
-music.pitch(494, 150)
-music.pitch(587, 180)
-music.pitch(659, 250)
-
-music.pitch(587, 180)
-music.pitch(494, 180)
-music.pitch(392, 400)
+# 循环 4 次，每轮约 7.5 秒，总计约 30 秒
+for i in range(4):
+    # --- 第1小节 ---
+    music.pitch(554, 160) # C#5
+    music.pitch(587, 160) # D#5
+    music.pitch(554, 160) # C#5
+    music.pitch(554, 320) # C#5
+    sleep(160)
+    
+    # --- 第2小节 ---
+    music.pitch(554, 160) # C#5
+    music.pitch(587, 160) # D#5
+    music.pitch(554, 160) # C#5
+    music.pitch(440, 320) # A4
+    sleep(160)
+    
+    # --- 第3小节 ---
+    music.pitch(554, 160) # C#5
+    music.pitch(587, 160) # D#5
+    music.pitch(554, 160) # C#5
+    music.pitch(494, 320) # B4
+    sleep(160)
+    
+    # --- 第4小节 ---
+    music.pitch(494, 160) # B4
+    music.pitch(554, 160) # C#5
+    music.pitch(494, 160) # B4
+    music.pitch(415, 320) # G#4
+    sleep(160)
