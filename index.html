@@ -1,47 +1,72 @@
-import music
-from microbit import *
+import time
 
-# 修正后的 102 BPM 精准时值：
-# 十六分音符 = 147ms | 八分音符 = 294ms | 附点八分 = 441ms | 四分音符 = 588ms
+# ----------------- 1. 核心音高数据库 (Pitches Data) -----------------
+# 注入 Steely Dan 灵魂：将原曲 Gm-Eb-Bb-F 走向重写为华丽的都市爵士和弦
+CHORD_PROGRESSION = [
+    [43, 55, 57, 58, 62],  # Gm(add9) - 根音G2 + 灵魂二度摩擦音(G3, A3, Bb3, D4)
+    [39, 51, 53, 55, 58],  # Eb(maj9) - 极具游离感的城市霓虹和弦
+    [46, 58, 60, 62, 65],  # Bb(maj9) - 代替原曲普通的Bb大三和弦
+    [41, 53, 55, 57, 60]   # F(add9)  - 留下一丝惆怅的尾音
+]
 
-for i in range(2):
-    # === 第一句：标志性钢琴上行切分 (C - D - E - G - G...) ===
-    music.pitch(523, 147)  # C5
-    music.pitch(587, 147)  # D5
-    music.pitch(659, 294)  # E5 (拉长)
-    music.pitch(784, 441)  # G5 (附点延迟)
-    music.pitch(784, 147)  # G5 
-    music.pitch(880, 294)  # A5
-    music.pitch(784, 294)  # G5
-    music.pitch(659, 588)  # E5 (深情长音)
-    sleep(147)             # 还原钢琴换气停顿
+# 原乐谱第9小节右手的核心旋律音高 (MIDI Pitch 编号)
+MELODY_PITCHES = [74, 70, 69, 67, 70, 69, 67, 65] # D5, Bb4, A4, G4 ...
+
+# ----------------- 2. 核心控制函数 (The Pitch Method) -----------------
+def play_note(track_id, pitch_val, duration, velocity=80):
+    """
+    底层模拟 music.pitch()：传入音轨、精确音高、持续时间与力度。
+    Steely Dan 风格要求力度极其严谨、没有杂音。
+    """
+    print(f"[Track {track_id}] 发出音高: {pitch_val} (持续: {duration}s, 力度: {velocity})")
+
+# ----------------- 3. 一分钟自动化编曲引擎 (60s Arrange Engine) -----------------
+start_time = time.time()
+bar = 1
+bpm_delay = 0.535  # 112 BPM 律动下，每拍的精准物理时间（秒）
+
+print("🎵 开始在虚拟设备上渲染 60秒《The Truth That You Leave (Steely Dan Style)》...")
+
+while (time.time() - start_time) < 60.0:
+    # 判定当前和弦周期
+    current_chord = CHORD_PROGRESSION[(bar - 1) % 4]
     
-    # === 第二句：流畅下行回旋 (F - E - D - C - D) ===
-    music.pitch(698, 147)  # F5
-    music.pitch(659, 147)  # E5
-    music.pitch(587, 294)  # D5
-    music.pitch(523, 441)  # C5
-    music.pitch(523, 147)  # C5
-    music.pitch(587, 294)  # D5
-    music.pitch(494, 588)  # B4 (落到低音和弦音)
-    sleep(294)             # 乐句间留白
+    # ──【阶段一：0-8秒 前奏】只渲染 Rhodes 电钢琴
+    if bar <= 4:
+        for pitch in current_chord:
+            play_note("Rhodes_Piano", pitch, duration=bpm_delay*4, velocity=70)
+        time.sleep(bpm_delay * 4) # 走完一小节
+        
+    # ──【阶段二：8-25秒 主歌】加入超级稳健的 Shuffle 鼓点与 Funk 贝斯
+    elif 5 <= bar <= 12:
+        # 贝斯弹奏切分根音
+        play_note("Funk_Bass", current_chord[0], duration=bpm_delay*2, velocity=95)
+        # 右手吉他懒洋洋地跟进
+        play_note("Clean_Guitar", MELODY_PITCHES[(bar-5)%len(MELODY_PITCHES)], duration=bpm_delay, velocity=80)
+        time.sleep(bpm_delay * 4)
+        
+    # ──【阶段三：25-43秒 副歌】铜管乐器华丽爆发
+    elif 13 <= bar <= 20:
+        # 铜管组吹奏密集的高位置九和弦
+        for pitch in current_chord:
+            play_note("Horn_Section", pitch + 12, duration=bpm_delay, velocity=110) # 提高一个八度
+        time.sleep(bpm_delay * 4)
+        
+    # ──【阶段四：43-55秒 吉他独奏】
+    elif 21 <= bar <= 26:
+        # 模拟拉里·卡尔顿式的丝滑半音阶 Solo 走向
+        solo_pitch = current_chord[2] + (bar % 3) 
+        play_note("Jazz_Guitar_Solo", solo_pitch, duration=bpm_delay*0.5, velocity=100)
+        time.sleep(bpm_delay * 4)
+        
+    # ──【阶段五：55-60秒 尾奏渐弱】
+    else:
+        # 最终停留在 G7(alt) 悬浮爵士和弦上渐弱
+        play_note("Rhodes_Piano", 55, duration=5.0, velocity=40)
+        print("🎚️ 触发主输出音轨淡出 (Fade out)...")
+        time.sleep(5.0)
+        break
 
-    # === 第三句：情绪递进爬升 (D - E - F - A - A...) ===
-    music.pitch(587, 147)  # D5
-    music.pitch(659, 147)  # E5
-    music.pitch(698, 294)  # F5
-    music.pitch(880, 441)  # A5
-    music.pitch(880, 147)  # A5
-    music.pitch(988, 294)  # B5 (冲向最高音)
-    music.pitch(880, 294)  # A5
-    music.pitch(784, 588)  # G5
-    sleep(147)
+    bar += 1
 
-    # === 第四句：高潮收尾回落 (G - F - E - D - C) ===
-    music.pitch(784, 147)  # G5
-    music.pitch(698, 147)  # F5
-    music.pitch(659, 294)  # E5
-    music.pitch(587, 441)  # D5
-    music.pitch(523, 147)  # C5
-    music.pitch(523, 882)  # C5 (最饱满的落音)
-    sleep(588)             # 完美无缝循环空档
+print(f"⏱️ 乐曲生成完毕！总运行时间: {round(time.time() - start_time, 2)} 秒。")
