@@ -1,37 +1,31 @@
-import music
-from microbit import sleep
+music.pitch(659, 250)
+music.pitch(784, 250)
+music.pitch(880, 350)
+music.pitch(784, 250)
 
-# 按照原谱速度 127 换算：一拍约为 470 毫秒
-# 八分音符约为 235 毫秒，十六分音符约为 118 毫秒
+music.pitch(659, 250)
+music.pitch(587, 350)
+music.pitch(659, 250)
+music.pitch(784, 450)
 
-print("🎵 正在原汁原味播放《The Truth That You Leave》原谱高潮片段...")
+sleep(100)
 
-# --- 【第 13 小节】（你发出的前半段原版旋律） ---
-music.pitch(659, 470)  # E5 (原谱高潮第一音，对应第一拍)
-music.pitch(587, 235)  # D5 (第二拍前半)
-music.pitch(659, 235)  # E5 (第二拍后半)
-music.pitch(784, 470)  # G5 (第三拍)
-music.pitch(659, 235)  # E5 (第四拍前半)
-music.pitch(587, 235)  # D5 (第四拍后半)
+music.pitch(880, 250)
+music.pitch(784, 250)
+music.pitch(659, 350)
+music.pitch(587, 250)
 
-# --- 【第 14 小节】（你发出的后半段原版旋律补全） ---
-sleep(118)            # 原谱休止符（十六分音符长度）
-music.pitch(523, 352)  # C5 (连音延长，对应你打出的 523, 30...)
-music.pitch(587, 235)  # D5 
-music.pitch(659, 470)  # E5 
-music.pitch(494, 470)  # B4 
+music.pitch(659, 250)
+music.pitch(784, 250)
+music.pitch(880, 450)
 
-# --- 【第 15 小节】（严格对应原谱下一小节旋律） ---
-music.pitch(587, 470)  # D5
-music.pitch(523, 235)  # C5
-music.pitch(587, 235)  # D5
-music.pitch(659, 470)  # E5
-music.pitch(523, 235)  # C5
-music.pitch(494, 235)  # B4
+sleep(100)
 
-# --- 【第 16 小节】（原谱旋律下落落脚） ---
-sleep(118)            # 休止符
-music.pitch(440, 352)  # A4
-music.pitch(494, 235)  # B4
-music.pitch(523, 470)  # C5
-music.pitch(392, 470)  # G4 
+music.pitch(784, 250)
+music.pitch(659, 250)
+music.pitch(587, 350)
+music.pitch(523, 300)
+
+music.pitch(587, 250)
+music.pitch(659, 250)
+music.pitch(784, 500)
