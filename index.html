@@ -1,42 +1,47 @@
 import music
 from microbit import *
 
-# 循环 3 次，总时长约为 30 秒
-for i in range(3):
-    # === 第一乐句：标志性上行与回旋 ===
-    music.pitch(659, 140)  # E5 ("The...")
-    music.pitch(698, 140)  # F5
-    music.pitch(784, 140)  # G5
-    music.pitch(880, 280)  # A5
-    music.pitch(784, 140)  # G5
-    music.pitch(659, 140)  # E5
-    music.pitch(587, 420)  # D5
-    sleep(140)
-    
-    music.pitch(523, 140)  # C5
-    music.pitch(587, 140)  # D5
-    music.pitch(659, 140)  # E5
-    music.pitch(784, 280)  # G5
-    music.pitch(659, 140)  # E5
-    music.pitch(523, 140)  # C5
-    music.pitch(494, 420)  # B4
-    sleep(280)             # 句间小停顿
+# 修正后的 102 BPM 精准时值：
+# 十六分音符 = 147ms | 八分音符 = 294ms | 附点八分 = 441ms | 四分音符 = 588ms
 
-    # === 第二乐句：情绪推进与转调 ===
-    music.pitch(440, 140)  # A4
-    music.pitch(494, 140)  # B4
-    music.pitch(523, 140)  # C5
-    music.pitch(587, 280)  # D5
-    music.pitch(523, 140)  # C5
-    music.pitch(494, 140)  # B4
-    music.pitch(523, 420)  # C5
-    sleep(140)
+for i in range(2):
+    # === 第一句：标志性钢琴上行切分 (C - D - E - G - G...) ===
+    music.pitch(523, 147)  # C5
+    music.pitch(587, 147)  # D5
+    music.pitch(659, 294)  # E5 (拉长)
+    music.pitch(784, 441)  # G5 (附点延迟)
+    music.pitch(784, 147)  # G5 
+    music.pitch(880, 294)  # A5
+    music.pitch(784, 294)  # G5
+    music.pitch(659, 588)  # E5 (深情长音)
+    sleep(147)             # 还原钢琴换气停顿
     
-    music.pitch(587, 140)  # D5
-    music.pitch(659, 140)  # E5
-    music.pitch(698, 140)  # F5
-    music.pitch(784, 280)  # G5
-    music.pitch(659, 140)  # E5
-    music.pitch(784, 140)  # G5
-    music.pitch(880, 560)  # A5 (高音长音延伸)
-    sleep(560)             # 完美留白，准备切回开头
+    # === 第二句：流畅下行回旋 (F - E - D - C - D) ===
+    music.pitch(698, 147)  # F5
+    music.pitch(659, 147)  # E5
+    music.pitch(587, 294)  # D5
+    music.pitch(523, 441)  # C5
+    music.pitch(523, 147)  # C5
+    music.pitch(587, 294)  # D5
+    music.pitch(494, 588)  # B4 (落到低音和弦音)
+    sleep(294)             # 乐句间留白
+
+    # === 第三句：情绪递进爬升 (D - E - F - A - A...) ===
+    music.pitch(587, 147)  # D5
+    music.pitch(659, 147)  # E5
+    music.pitch(698, 294)  # F5
+    music.pitch(880, 441)  # A5
+    music.pitch(880, 147)  # A5
+    music.pitch(988, 294)  # B5 (冲向最高音)
+    music.pitch(880, 294)  # A5
+    music.pitch(784, 588)  # G5
+    sleep(147)
+
+    # === 第四句：高潮收尾回落 (G - F - E - D - C) ===
+    music.pitch(784, 147)  # G5
+    music.pitch(698, 147)  # F5
+    music.pitch(659, 294)  # E5
+    music.pitch(587, 441)  # D5
+    music.pitch(523, 147)  # C5
+    music.pitch(523, 882)  # C5 (最饱满的落音)
+    sleep(588)             # 完美无缝循环空档
