@@ -1,81 +1,73 @@
 import music
 from microbit import sleep
 
-# 速度参数（BPM 120 标准换算）
-QUARTER = 500   # 一拍 (如 3)
-EIGHTH = 250    # 半拍 (如 6 下面有一条横线)
-SIXTEENTH = 125 # 四分之一拍 (如 2 3 下面有两条横线)
+for loop in range(4):
+    # 第 1 节
+    sleep(500)
+    sleep(250)
+    music.pitch(440, 250)
+    music.pitch(494, 250)
+    music.pitch(523, 250)
+    music.pitch(587, 250)
+    music.pitch(659, 250)
 
-print("🎵 正在严格按照原谱播放《鸟之诗》片段...")
+    # 第 2 节
+    music.pitch(1319, 500)
+    sleep(250)
+    music.pitch(1319, 250)
+    music.pitch(1175, 125)
+    music.pitch(1319, 125)
+    music.pitch(1319, 500)
+    sleep(500)
 
-# === 【第 1 小节】 ===
-sleep(QUARTER)         # 0 (一拍休止)
-sleep(EIGHTH)          # 0 (半拍休止)
-music.pitch(440, EIGHTH) # 6 (低音，440Hz)
-music.pitch(494, EIGHTH) # 7 (低音，494Hz)
-music.pitch(523, EIGHTH) # 1 (中音，523Hz)
-music.pitch(587, EIGHTH) # 2 (中音，587Hz)
-music.pitch(659, EIGHTH) # 3 (中音，659Hz)
+    # 第 3 节
+    sleep(250)
+    music.pitch(1175, 250)
+    music.pitch(1319, 250)
+    music.pitch(1568, 250)
+    music.pitch(1047, 250)
+    music.pitch(988, 250)
+    music.pitch(1047, 250)
+    music.pitch(988, 250)
 
-# === 【第 2 小节】 ===
-music.pitch(1319, QUARTER) # 3 (高音，带上一点)
-sleep(EIGHTH)              # 0
-music.pitch(1319, EIGHTH)  # 3 (高音)
-music.pitch(1175, SIXTEENTH) # 2 (高音)
-music.pitch(1319, SIXTEENTH) # 3 (高音)
-music.pitch(1319, QUARTER) # 3 (高音)
-sleep(QUARTER)             # - (延时休止)
+    # 第 4 节
+    music.pitch(988, 500)
+    music.pitch(988, 250)
+    music.pitch(880, 125)
+    music.pitch(988, 125)
+    music.pitch(1047, 500)
+    music.pitch(1047, 500)
 
-# === 【第 3 小节】 ===
-sleep(EIGHTH)              # 0
-music.pitch(1175, EIGHTH)  # 2 (高音)
-music.pitch(1319, EIGHTH)  # 3 (高音)
-music.pitch(1568, EIGHTH)  # 5 (高音)
-music.pitch(1047, EIGHTH)  # 1 (高音)
-music.pitch(988, EIGHTH)   # 7 (中音)
-music.pitch(1047, EIGHTH)  # 1 (高音)
-music.pitch(988, EIGHTH)   # 7 (中音)
+    # 第 5 节
+    sleep(750)
+    music.pitch(440, 250)
+    music.pitch(440, 250)
+    music.pitch(494, 250)
+    music.pitch(523, 250)
+    music.pitch(587, 250)
 
-# === 【第 4 小节】 ===
-music.pitch(988, QUARTER)  # 7 (中音)
-music.pitch(988, EIGHTH)   # 7 (中音)
-music.pitch(880, SIXTEENTH) # 6 (中音)
-music.pitch(988, SIXTEENTH) # 7 (中音)
-music.pitch(1047, QUARTER) # 1 (高音)
-music.pitch(1047, QUARTER) # 1 (高音)
+    # 第 6 节
+    music.pitch(1319, 500)
+    sleep(250)
+    music.pitch(1319, 250)
+    music.pitch(1175, 125)
+    music.pitch(1319, 125)
+    music.pitch(1319, 500)
+    sleep(500)
 
-# === 【第 5 小节】 ===
-# 0. 是附点四分音符，长度为 500 + 250 = 750 毫秒
-sleep(750)                 # 0.
-music.pitch(440, EIGHTH)   # 6 (低音)
-music.pitch(440, EIGHTH)   # 6 (低音)
-music.pitch(494, EIGHTH)   # 7 (低音)
-music.pitch(523, EIGHTH)   # 1 (中音)
-music.pitch(587, EIGHTH)   # 2 (中音)
+    # 第 7 节
+    sleep(500)
+    music.pitch(1175, 250)
+    music.pitch(1319, 250)
+    music.pitch(1568, 250)
+    music.pitch(1319, 250)
+    music.pitch(1568, 250)
+    music.pitch(1047, 250)
 
-# === 【第 6 小节】 ===
-music.pitch(1319, QUARTER) # 3 (高音)
-sleep(EIGHTH)              # 0
-music.pitch(1319, EIGHTH)  # 3 (高音)
-music.pitch(1175, SIXTEENTH) # 2 (高音)
-music.pitch(1319, SIXTEENTH) # 3 (高音)
-music.pitch(1319, QUARTER) # 3 (高音)
-sleep(QUARTER)             # -
-
-# === 【第 7 小节】 ===
-sleep(QUARTER)             # 0
-music.pitch(1175, EIGHTH)  # 2 (高音)
-music.pitch(1319, EIGHTH)  # 3 (高音)
-music.pitch(1568, EIGHTH)  # 5 (高音)
-music.pitch(1319, EIGHTH)  # 3 (高音)
-music.pitch(1568, EIGHTH)  # 5 (高音)
-music.pitch(1047, EIGHTH)  # 1 (高音)
-
-# === 【第 8 小节】 ===
-# 7. 同样是附点，占 750 毫秒
-music.pitch(988, 750)      # 7. (中音)
-music.pitch(880, SIXTEENTH) # 6 (中音)
-music.pitch(880, SIXTEENTH) # 6 (中音)
-music.pitch(988, EIGHTH)   # 7 (中音)
-music.pitch(1047, QUARTER) # 1 (高音)
-music.pitch(1047, QUARTER) # 1 (高音)
+    # 第 8 节
+    music.pitch(988, 750)
+    music.pitch(880, 125)
+    music.pitch(880, 125)
+    music.pitch(988, 250)
+    music.pitch(1047, 500)
+    music.pitch(1047, 500)
