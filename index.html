@@ -1,20 +1,64 @@
 import music
 from microbit import *
 
-for i in range(5):
-    # 第一半句
-    music.pitch(220, 160)  # A3
-    music.pitch(220, 160)  # A3
+# === 1. 前奏段落 (Intro)：低音蓄力 (约20秒) ===
+for i in range(4):
+    music.pitch(220, 160)  # A3 (标志性低音)
+    music.pitch(220, 160)  
     sleep(160)
-    music.pitch(220, 160)  # A3
-    music.pitch(220, 160)  # A3
+    music.pitch(220, 160)  
+    music.pitch(220, 160)  
     sleep(160)
-    
-    # 第二半句（音调上行）
     music.pitch(262, 160)  # C4
     music.pitch(294, 160)  # D4
     sleep(160)
-    music.pitch(294, 160)  # D4
+    music.pitch(294, 160)  
     music.pitch(330, 160)  # E4
-    music.pitch(392, 320)  # G4
+    music.pitch(220, 320)  # A3
+    sleep(160)
+
+# === 2. 主歌段落 (Verse)：冷酷人声铺垫 (约25秒) ===
+for i in range(2):
+    # 第一句 "White shirt now red..."
+    music.pitch(220, 320)  # A3
+    music.pitch(220, 320)  
+    music.pitch(262, 160)  # C4
+    music.pitch(220, 480)  # A3
     sleep(320)
+    # 第二句 "Creepin' around like no one knows..."
+    music.pitch(294, 320)  # D4
+    music.pitch(294, 320)  
+    music.pitch(349, 160)  # F4
+    music.pitch(294, 480)  # D4
+    sleep(320)
+    # 第三句 "Think you're so criminal..."
+    music.pitch(330, 320)  # E4
+    music.pitch(392, 320)  # G4
+    music.pitch(330, 640)  # E4
+    sleep(320)
+
+# === 3. 副歌段落 (Chorus)：经典合成器高潮 (约35秒) ===
+for i in range(6):
+    music.pitch(440, 160)  # A4 (音调升高，进入高潮)
+    music.pitch(440, 160)  
+    sleep(160)
+    music.pitch(440, 160)  
+    music.pitch(440, 160)  
+    sleep(160)
+    music.pitch(523, 160)  # C5
+    music.pitch(587, 160)  # D5
+    sleep(160)
+    music.pitch(587, 160)  
+    music.pitch(659, 160)  # E5
+    music.pitch(784, 320)  # G5 (极具标志性的那一声变音)
+    sleep(160)
+
+# === 4. 尾奏段落 (Outro)：“Duh” 降速结尾 (约10秒) ===
+# 模拟原曲最后变慢、变沉重的暗黑风格
+music.pitch(220, 320)  # A3
+sleep(200)
+music.pitch(196, 480)  # G3 (音调下沉)
+sleep(300)
+music.pitch(165, 640)  # E3
+sleep(400)
+music.pitch(110, 1000) # A2 (超低音定格结束)
