@@ -1,33 +1,42 @@
-music.pitch(659, 300)
-music.pitch(784, 300)
-music.pitch(880, 450)
+import music
+from microbit import *
 
-music.pitch(784, 300)
-music.pitch(698, 300)
-music.pitch(659, 450)
+# 循环 3 次，总时长约为 30 秒
+for i in range(3):
+    # === 第一乐句：标志性上行与回旋 ===
+    music.pitch(659, 140)  # E5 ("The...")
+    music.pitch(698, 140)  # F5
+    music.pitch(784, 140)  # G5
+    music.pitch(880, 280)  # A5
+    music.pitch(784, 140)  # G5
+    music.pitch(659, 140)  # E5
+    music.pitch(587, 420)  # D5
+    sleep(140)
+    
+    music.pitch(523, 140)  # C5
+    music.pitch(587, 140)  # D5
+    music.pitch(659, 140)  # E5
+    music.pitch(784, 280)  # G5
+    music.pitch(659, 140)  # E5
+    music.pitch(523, 140)  # C5
+    music.pitch(494, 420)  # B4
+    sleep(280)             # 句间小停顿
 
-music.pitch(587, 300)
-music.pitch(659, 300)
-music.pitch(784, 450)
-
-music.pitch(698, 300)
-music.pitch(659, 300)
-music.pitch(587, 500)
-
-sleep(150)
-
-music.pitch(659, 300)
-music.pitch(784, 300)
-music.pitch(880, 450)
-
-music.pitch(988, 300)
-music.pitch(880, 300)
-music.pitch(784, 450)
-
-music.pitch(698, 300)
-music.pitch(784, 300)
-music.pitch(880, 450)
-
-music.pitch(784, 300)
-music.pitch(659, 300)
-music.pitch(587, 600)
+    # === 第二乐句：情绪推进与转调 ===
+    music.pitch(440, 140)  # A4
+    music.pitch(494, 140)  # B4
+    music.pitch(523, 140)  # C5
+    music.pitch(587, 280)  # D5
+    music.pitch(523, 140)  # C5
+    music.pitch(494, 140)  # B4
+    music.pitch(523, 420)  # C5
+    sleep(140)
+    
+    music.pitch(587, 140)  # D5
+    music.pitch(659, 140)  # E5
+    music.pitch(698, 140)  # F5
+    music.pitch(784, 280)  # G5
+    music.pitch(659, 140)  # E5
+    music.pitch(784, 140)  # G5
+    music.pitch(880, 560)  # A5 (高音长音延伸)
+    sleep(560)             # 完美留白，准备切回开头
